@@ -53,6 +53,50 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        throw new RuntimeException("Not implemented");
+        Collection<ChessMove> moves = new ArrayList<>();
+        if (this.type == PieceType.PAWN) {
+            if (this.pieceColor == ChessGame.TeamColor.WHITE) {
+                if (myPosition.getRow() == 2) {
+                    ChessPosition position = new ChessPosition(myPosition.getRow() + 1, myPosition.getColumn());
+                    ChessPosition position2 = new ChessPosition(myPosition.getRow() + 2, myPosition.getColumn());
+                    ChessPosition position3 = new ChessPosition(myPosition.getRow() + 1, myPosition.getColumn() + 1);
+                    ChessPosition position4 = new ChessPosition(myPosition.getRow() + 1, myPosition.getColumn() - 1);
+                    if (board.getPiece(position) == null) {
+                        moves.add(new ChessMove(myPosition, position, null));
+                    }
+                    if (board.getPiece(position2) == null) {
+                        moves.add(new ChessMove(myPosition, position2, null));
+                    }
+                    if (board.getPiece(position3) != null) {
+                        if (board.getPiece(position3).getTeamColor() != this.pieceColor) {
+                            moves.add(new ChessMove(myPosition, position3, null));
+                        }
+                    }
+                    if (board.getPiece(position4) != null) {
+                        if (board.getPiece(position4).getTeamColor() != this.pieceColor) {
+                            moves.add(new ChessMove(myPosition, position4, null));
+                        }
+                    }
+                } else {
+                    ChessPosition position = new ChessPosition(myPosition.getRow() + 1, myPosition.getColumn());
+                    ChessPosition position2 = new ChessPosition(myPosition.getRow() + 1, myPosition.getColumn() + 1);
+                    ChessPosition position3 = new ChessPosition(myPosition.getRow() + 1, myPosition.getColumn() - 1);
+                    if (board.getPiece(position) == null) {
+                        moves.add(new ChessMove(myPosition, position, null));
+                    }
+                    if (board.getPiece(position2) != null) {
+                        if (board.getPiece(position2).getTeamColor() != this.pieceColor) {
+                            moves.add(new ChessMove(myPosition, position2, null));
+                        }
+                    }
+                    if (board.getPiece(position3) != null) {
+                        if (board.getPiece(position3).getTeamColor() != this.pieceColor) {
+                            moves.add(new ChessMove(myPosition, position3, null));
+                        }
+                    }
+                }
+            }
+        }
+        return moves;
     }
 }
