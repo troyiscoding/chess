@@ -55,23 +55,28 @@ public class ChessPiece {
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
 
-        //Collection<ChessMove> moves = new ArrayList<>();
+        Collection<ChessMove> moves = new ArrayList<>();
         var piece = board.getPiece(myPosition);
         switch (piece.getPieceType()) {
             case KING:
-                return new KingMoves(board, myPosition);
+                return new KingMoves().kingMoves(board, myPosition);
             case QUEEN:
-                return new QueenMoves(board, myPosition);
+                //return new QueenMoves().queenMoves(board, myPosition);
+                throw new RuntimeException("Error: Still working on it");
             case BISHOP:
-                return new BishopMoves(board, myPosition);
+                //return new BishopMoves().bishopMovesMoves(board, myPosition);
+                throw new RuntimeException("Error: Still working on it");
             case KNIGHT:
-                return new KnightMoves(board, myPosition);
+                //return new KnightMoves().;
+                throw new RuntimeException("Error: Still working on it");
             case ROOK:
-                return new RookMoves(board, myPosition);
+                //return new RookMoves(board, myPosition);
+                throw new RuntimeException("Error: Still working on it");
             case PAWN:
-                return new PawnMoves(board, myPosition);
+                return new PawnMoves().pawnMoves(board, myPosition);
+
             default:
-                return new HashSet<>();
+                throw new RuntimeException("Error: Invalid Piece Type");
         }
     }
 
