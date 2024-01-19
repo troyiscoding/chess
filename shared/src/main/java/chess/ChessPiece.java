@@ -57,9 +57,22 @@ public class ChessPiece {
 
         //Collection<ChessMove> moves = new ArrayList<>();
         var piece = board.getPiece(myPosition);
-
-        return new HashSet<>();
-
+        switch (piece.getPieceType()) {
+            case KING:
+                return new KingMoves(board, myPosition);
+            case QUEEN:
+                return new QueenMoves(board, myPosition);
+            case BISHOP:
+                return new BishopMoves(board, myPosition);
+            case KNIGHT:
+                return new KnightMoves(board, myPosition);
+            case ROOK:
+                return new RookMoves(board, myPosition);
+            case PAWN:
+                return new PawnMoves(board, myPosition);
+            default:
+                return new HashSet<>();
+        }
     }
 
     @Override
