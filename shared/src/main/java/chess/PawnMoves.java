@@ -2,9 +2,10 @@ package chess;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 
 public class PawnMoves {
-    private HashSet<ChessMove> myMoves = new HashSet<ChessMove>();
+    private LinkedHashSet<ChessMove> myMoves = new LinkedHashSet<ChessMove>();
 
     public Collection<ChessMove> pawnMoves(ChessBoard board, ChessPosition myPosition, ChessGame.TeamColor teamColor) {
         //return a collection of chessMoves

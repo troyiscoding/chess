@@ -61,11 +61,9 @@ public class ChessPiece {
             case KING:
                 return new KingMoves().kingMoves(board, myPosition);
             case QUEEN:
-                //return new QueenMoves().queenMoves(board, myPosition);
-                throw new RuntimeException("Error: Still working on it");
+                return new QueenMoves().queenMoves(board, myPosition);
             case BISHOP:
-                //return new BishopMoves().bishopMovesMoves(board, myPosition);
-                throw new RuntimeException("Error: Still working on it");
+                return new BishopMoves().bishopMoves(board, myPosition);
             case KNIGHT:
                 //return new KnightMoves().;
                 throw new RuntimeException("Error: Still working on it");
