@@ -67,7 +67,7 @@ public class ChessPiece {
             case PAWN:
                 return new PawnMoves().pawnMoves(board, myPosition);
             default:
-                throw new RuntimeException("Error: Invalid Piece Type");
+                throw new RuntimeException("Error: Look at your pieceMoves");
         }
     }
 
