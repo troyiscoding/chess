@@ -1,8 +1,6 @@
 package chess;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 
 /**
  * Represents a single chess piece
@@ -54,8 +52,6 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-
-        Collection<ChessMove> moves = new ArrayList<>();
         var piece = board.getPiece(myPosition);
         switch (piece.getPieceType()) {
             case KING:
@@ -65,14 +61,11 @@ public class ChessPiece {
             case BISHOP:
                 return new BishopMoves().bishopMoves(board, myPosition);
             case KNIGHT:
-                //return new KnightMoves().;
-                throw new RuntimeException("Error: Still working on it");
+                return new KnightMoves().knightMoves(board, myPosition);
             case ROOK:
-                //return new RookMoves(board, myPosition);
-                throw new RuntimeException("Error: Still working on it");
+                return new RookMoves().rookMoves(board, myPosition);
             case PAWN:
-                //return new PawnMoves().pawnMoves(board, myPosition, piece.getTeamColor());
-
+                return new PawnMoves().pawnMoves(board, myPosition);
             default:
                 throw new RuntimeException("Error: Invalid Piece Type");
         }

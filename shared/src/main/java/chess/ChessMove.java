@@ -42,11 +42,7 @@ public class ChessMove {
      * @return Type of piece to promote a pawn to, or null if no promotion
      */
     public ChessPiece.PieceType getPromotionPiece() {
-        if (ChessPiece.PieceType.PAWN == promotionPiece) {
-            return promotionPiece;
-        } else {
-            return null;
-        }
+        return promotionPiece;
     }
 
     @Override
