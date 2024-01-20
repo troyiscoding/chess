@@ -5,26 +5,26 @@ import java.util.HashSet;
 
 public class BishopMoves {
 
-    private HashSet<ChessMove> myMoves = new HashSet<ChessMove>();
+    private final HashSet<ChessMove> myMoves = new HashSet<>();
 
     public Collection<ChessMove> bishopMoves(ChessBoard board, ChessPosition myPosition) {
         int currentRow = myPosition.getRow();
         int currentCol = myPosition.getColumn();
         //Move down-left
         for (int i = currentRow - 1, j = currentCol - 1; i > 0 && j > 0; i--, j--) {
-            if (!validMove(i, j, board, myPosition)) break;
+            if (validMove(i, j, board, myPosition)) break;
         }
         //Move down-right
         for (int i = currentRow - 1, j = currentCol + 1; i > 0 && j < 9; i--, j++) {
-            if (!validMove(i, j, board, myPosition)) break;
+            if (validMove(i, j, board, myPosition)) break;
         }
         //Move up-left
         for (int i = currentRow + 1, j = currentCol - 1; i < 9 && j > 0; i++, j--) {
-            if (!validMove(i, j, board, myPosition)) break;
+            if (validMove(i, j, board, myPosition)) break;
         }
         //Move up-right
         for (int i = currentRow + 1, j = currentCol + 1; i < 9 && j < 9; i++, j++) {
-            if (!validMove(i, j, board, myPosition)) break;
+            if (validMove(i, j, board, myPosition)) break;
         }
         //
         return myMoves;
@@ -38,11 +38,11 @@ public class BishopMoves {
                 ChessPosition futurePosition = new ChessPosition(row, col);
                 ChessMove addMove = new ChessMove(myPosition, futurePosition, null);
                 myMoves.add(addMove);
-                return destinationPiece == null;
+                return destinationPiece != null;
             } else {
-                return false;
+                return true;
             }
         }
-        return false;
+        return true;
     }
 }

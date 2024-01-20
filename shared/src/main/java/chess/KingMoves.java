@@ -1,11 +1,10 @@
 package chess;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 
 public class KingMoves {
-    private ArrayList<ChessMove> myMoves = new ArrayList<ChessMove>();
+    private final HashSet<ChessMove> myMoves = new HashSet<>();
 
     public Collection<ChessMove> kingMoves(ChessBoard board, ChessPosition myPosition) {
         validMove(myPosition.getRow() + 1, myPosition.getColumn() - 1, board, myPosition); // Move 1: down-left
