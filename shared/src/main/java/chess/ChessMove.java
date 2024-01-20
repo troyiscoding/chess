@@ -43,7 +43,7 @@ public class ChessMove {
         if (ChessPiece.PieceType.PAWN == promotionPiece) {
             return promotionPiece;
         } else {
-            return promotionPiece;
+            return null;
         }
     }
 
@@ -55,6 +55,15 @@ public class ChessMove {
     @Override
     public boolean equals(Object obj) {
         return super.equals(obj);
+    }
+
+    @Override
+    public String toString() {
+        return "ChessMove{" +
+                "startPosition=" + startPosition +
+                ", endPosition=" + endPosition +
+                ", promotionPiece=" + promotionPiece +
+                '}';
     }
 }
 

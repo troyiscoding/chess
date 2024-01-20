@@ -73,7 +73,7 @@ public class ChessPiece {
                 //return new RookMoves(board, myPosition);
                 throw new RuntimeException("Error: Still working on it");
             case PAWN:
-                return new PawnMoves().pawnMoves(board, myPosition);
+                //return new PawnMoves().pawnMoves(board, myPosition, piece.getTeamColor());
 
             default:
                 throw new RuntimeException("Error: Invalid Piece Type");
@@ -97,5 +97,6 @@ public class ChessPiece {
         result = 31 * result + type.hashCode();
         return result;
     }
+
 }
 
