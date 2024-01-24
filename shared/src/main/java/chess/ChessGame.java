@@ -11,10 +11,10 @@ import java.util.Objects;
  */
 public class ChessGame {
     private TeamColor teamTurn;
-    public ChessBoard board;
+    public ChessBoard board = new ChessBoard();
 
     public ChessGame() {
-        this.board = new ChessBoard();
+        board.resetBoard();
     }
 
     /**
@@ -30,11 +30,7 @@ public class ChessGame {
      * @param team the team whose turn it is
      */
     public void setTeamTurn(TeamColor team) {
-        if (team != TeamColor.WHITE) {
-            teamTurn = TeamColor.BLACK;
-        } else {
-            teamTurn = TeamColor.WHITE;
-        }
+        this.teamTurn = team;
     }
 
     /**
@@ -54,8 +50,8 @@ public class ChessGame {
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
         if (getBoard().getPiece(startPosition) != null) {
-            //TODO: Implement
-            return null;
+            return getBoard().getPiece(startPosition).pieceMoves(board, startPosition);
+
         } else {
             return null;
         }
@@ -69,7 +65,7 @@ public class ChessGame {
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
 
-        throw new RuntimeException("Not implemented");
+        throw new InvalidMoveException("Invalid move");
     }
 
     /**
@@ -83,12 +79,15 @@ public class ChessGame {
         for (int i = 1; i < 9; i++) {
             for (int j = 1; j < 9; j++) {
                 ChessPosition position = new ChessPosition(i, j);
-                if (getBoard().getPiece(position) != null) {
-                    if (getBoard().getPiece(position).getTeamColor() != teamColor) {
-                        Collection<ChessMove> moves = validMoves(position);
+                ChessPiece currentPiece = board.getPiece(position);
+                if (currentPiece != null) {
+                    if (currentPiece.getTeamColor() != teamColor) {
+                        Collection<ChessMove> moves = currentPiece.pieceMoves(this.board, position);
                         for (ChessMove move : moves) {
-                            if (getBoard().getPiece(move.getEndPosition()).getPieceType() == ChessPiece.PieceType.KING) {
-                                b = true;
+                            if (board.getPiece(move.getEndPosition()) != null) {
+                                if (board.getPiece(move.getEndPosition()).getPieceType() == ChessPiece.PieceType.KING) {
+                                    b = true;
+                                }
                             }
                         }
                     }
@@ -125,7 +124,7 @@ public class ChessGame {
      * @param board the new board to use
      */
     public void setBoard(ChessBoard board) {
-        board.resetBoard();
+        this.board = board;
     }
 
     /**
@@ -134,7 +133,7 @@ public class ChessGame {
      * @return the chessboard
      */
     public ChessBoard getBoard() {
-        return this.board;
+        return board;
     }
 
     @Override
