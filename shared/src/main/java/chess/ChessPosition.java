@@ -32,6 +32,10 @@ public class ChessPosition {
         return col;
     }
 
+    public boolean inBounds() {
+        return row > 0 && row < 9 && col > 0 && col < 9;
+    }
+
     /**
      * Evaluates if the given object is equal to this object
      */

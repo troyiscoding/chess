@@ -16,14 +16,21 @@ public class PawnMoves {
             if (currentRow == 2 && !isBlocked) {
                 validMoveForward(currentRow + 2, currentCol, board, myPosition);
             }
-            ChessPiece takeRight = board.getPiece(new ChessPosition(currentRow + 1, currentCol + 1));
-            if (takeRight != null && takeRight.getTeamColor() != board.getPiece(myPosition).getTeamColor()) {
-                validMove(currentRow + 1, currentCol + 1, board, myPosition);
+            ChessPosition pos = new ChessPosition(currentRow + 1, currentCol + 1);
+            if (pos.inBounds()) {
+                ChessPiece takeRight = board.getPiece(pos);
+                if (takeRight != null && takeRight.getTeamColor() != board.getPiece(myPosition).getTeamColor()) {
+                    validMove(currentRow + 1, currentCol + 1, board, myPosition);
+                }
             }
-            ChessPiece takeLeft = board.getPiece(new ChessPosition(currentRow + 1, currentCol - 1));
-            if (takeLeft != null && takeLeft.getTeamColor() != board.getPiece(myPosition).getTeamColor()) {
-                validMove(currentRow + 1, currentCol - 1, board, myPosition);
+            pos = new ChessPosition(currentRow + 1, currentCol - 1);
+            if (pos.inBounds()) {
+                ChessPiece takeLeft = board.getPiece(pos);
+                if (takeLeft != null && takeLeft.getTeamColor() != board.getPiece(myPosition).getTeamColor()) {
+                    validMove(currentRow + 1, currentCol - 1, board, myPosition);
+                }
             }
+
 
         } else {
             boolean isBlocked = validMoveForward(currentRow - 1, currentCol, board, myPosition);
@@ -32,13 +39,19 @@ public class PawnMoves {
             if (currentRow == 7 && !isBlocked) {
                 validMoveForward(currentRow - 2, currentCol, board, myPosition);
             }
-            ChessPiece takeRight = board.getPiece(new ChessPosition(currentRow - 1, currentCol + 1));
-            if (takeRight != null && takeRight.getTeamColor() != board.getPiece(myPosition).getTeamColor()) {
-                validMove(currentRow - 1, currentCol + 1, board, myPosition);
+            ChessPosition pos2 = new ChessPosition(currentRow - 1, currentCol + 1);
+            if (pos2.inBounds()) {
+                ChessPiece takeRight = board.getPiece(pos2);
+                if (takeRight != null && takeRight.getTeamColor() != board.getPiece(myPosition).getTeamColor()) {
+                    validMove(currentRow - 1, currentCol + 1, board, myPosition);
+                }
             }
-            ChessPiece takeLeft = board.getPiece(new ChessPosition(currentRow - 1, currentCol - 1));
-            if (takeLeft != null && takeLeft.getTeamColor() != board.getPiece(myPosition).getTeamColor()) {
-                validMove(currentRow - 1, currentCol - 1, board, myPosition);
+            ChessPosition pos = new ChessPosition(currentRow - 1, currentCol - 1);
+            if (pos.inBounds()) {
+                ChessPiece takeLeft = board.getPiece(new ChessPosition(currentRow - 1, currentCol - 1));
+                if (takeLeft != null && takeLeft.getTeamColor() != board.getPiece(myPosition).getTeamColor()) {
+                    validMove(currentRow - 1, currentCol - 1, board, myPosition);
+                }
             }
         }
         return myMoves;

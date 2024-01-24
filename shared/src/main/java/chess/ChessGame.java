@@ -1,6 +1,8 @@
 package chess;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Objects;
 
 /**
@@ -53,12 +55,7 @@ public class ChessGame {
         if (piece == null) {
             return null;
         } else {
-            TeamColor currentColor = piece.getTeamColor();
-            if (!isInCheck(currentColor) && !isInCheckmate(currentColor)) {
-                return piece.pieceMoves(board, startPosition);
-            } else {
-                return null;
-            }
+            return piece.pieceMoves(board, startPosition);
         }
     }
 
@@ -69,18 +66,21 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
+
         if (move.getStartPosition().getRow() < 1 || move.getStartPosition().getRow() > 8 || move.getStartPosition().getColumn() < 1 || move.getStartPosition().getColumn() > 8) {
             throw new InvalidMoveException("Out of board");
-        }
-        if (move.getEndPosition().getRow() < 1 || move.getEndPosition().getRow() > 8 || move.getEndPosition().getColumn() < 1 || move.getEndPosition().getColumn() > 8) {
+        } else if (move.getEndPosition().getRow() < 1 || move.getEndPosition().getRow() > 8 || move.getEndPosition().getColumn() < 1 || move.getEndPosition().getColumn() > 8) {
             throw new InvalidMoveException("Out of board");
-        }
-        if (board.getPiece(move.getStartPosition()) == null) {
+        } else if (board.getPiece(move.getStartPosition()) == null) {
             throw new InvalidMoveException("No piece");
-        }
-        if (validMoves(move.getStartPosition()) == null) {
-            throw new InvalidMoveException("Invalid Move");
+        } else if (board.getPiece(move.getStartPosition()).getTeamColor() != teamTurn) {
+            throw new InvalidMoveException("Wrong team");
         } else {
+            Collection<ChessMove> chessMoves = validMoves(move.getStartPosition());
+            if (chessMoves == null || !chessMoves.contains(move)) {
+                throw new InvalidMoveException("Invalid move");
+            }
+
             ChessPiece piece = board.getPiece(move.getStartPosition());
             if (piece.getPieceType() == ChessPiece.PieceType.PAWN) {
                 if (move.getEndPosition().getRow() == 8 || move.getEndPosition().getRow() == 1) {
