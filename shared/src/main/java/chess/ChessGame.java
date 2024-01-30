@@ -80,7 +80,15 @@ public class ChessGame {
             if (chessMoves == null || !chessMoves.contains(move)) {
                 throw new InvalidMoveException("Invalid move");
             }
-
+            for (ChessMove chessMove : chessMoves) {
+                ChessGame testGame = new ChessGame();
+                testGame.setBoard(board);
+                testGame.setTeamTurn(teamTurn);
+                testGame.makeMove(chessMove);
+                if (testGame.isInCheck(teamTurn)) {
+                    throw new InvalidMoveException("Check");
+                }
+            }
             ChessPiece piece = board.getPiece(move.getStartPosition());
             if (piece.getPieceType() == ChessPiece.PieceType.PAWN) {
                 if (move.getEndPosition().getRow() == 8 || move.getEndPosition().getRow() == 1) {
@@ -168,7 +176,23 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        boolean d = false;
+        for (int i = 1; i < 9; i++) {
+            for (int j = 1; j < 9; j++) {
+                ChessPosition position = new ChessPosition(i, j);
+                ChessPiece currentPiece = board.getPiece(position);
+                if (currentPiece != null) {
+                    if (currentPiece.getTeamColor() == teamColor) {
+                        Collection<ChessMove> moves = currentPiece.pieceMoves(this.board, position);
+                        if (!moves.isEmpty()) {
+                            d = true;
+                        }
+                    }
+                }
+            }
+        }
+        return d;
+
     }
 
     /**
