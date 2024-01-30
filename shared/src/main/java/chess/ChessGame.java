@@ -1,6 +1,5 @@
 package chess;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Objects;
@@ -62,7 +61,7 @@ public class ChessGame {
                 ChessPiece testPiece = testGame.board.getPiece(move.getStartPosition());
                 testGame.board.addPiece(move.getStartPosition(), null);
                 testGame.board.addPiece(move.getEndPosition(), testPiece);
-                if (!testGame.isInCheck(teamTurn) && !testGame.isInCheckmate(teamTurn)) {
+                if (!testGame.isInCheck(testPiece.getTeamColor())) {
                     validMoves.add(move);
                 }
             }
