@@ -1,6 +1,8 @@
 package chess;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Objects;
 
 /**
@@ -53,9 +55,19 @@ public class ChessGame {
         if (piece == null) {
             return null;
         } else {
-            return piece.pieceMoves(board, startPosition);
+            Collection<ChessMove> moves = piece.pieceMoves(board, startPosition);
+            Collection<ChessMove> validMoves = new HashSet<>();
+            for (ChessMove move : moves) {
+                ChessGame testGame = deepCopy();
+                ChessPiece testPiece = testGame.board.getPiece(move.getStartPosition());
+                testGame.board.addPiece(move.getStartPosition(), null);
+                testGame.board.addPiece(move.getEndPosition(), testPiece);
+                if (!testGame.isInCheck(teamTurn) && !testGame.isInCheckmate(teamTurn)) {
+                    validMoves.add(move);
+                }
+            }
+            return validMoves;
         }
-
     }
 
     /**
