@@ -1,8 +1,6 @@
 package chess;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Objects;
 
 /**
@@ -12,7 +10,7 @@ import java.util.Objects;
  * signature of the existing methods.
  */
 public class ChessGame {
-    private TeamColor teamTurn;
+    private TeamColor teamTurn = TeamColor.WHITE;
     public ChessBoard board = new ChessBoard();
 
     public ChessGame() {
@@ -57,6 +55,7 @@ public class ChessGame {
         } else {
             return piece.pieceMoves(board, startPosition);
         }
+
     }
 
     /**
@@ -80,14 +79,23 @@ public class ChessGame {
             if (chessMoves == null || !chessMoves.contains(move)) {
                 throw new InvalidMoveException("Invalid move");
             }
+            ChessGame testGame = deepCopy();
+            boolean check = false;
             for (ChessMove chessMove : chessMoves) {
-                ChessGame testGame = new ChessGame();
-                testGame.setBoard(board);
-                testGame.setTeamTurn(teamTurn);
-                testGame.makeMove(chessMove);
-                if (testGame.isInCheck(teamTurn)) {
-                    throw new InvalidMoveException("Check");
+                ChessPiece testPiece = testGame.board.getPiece(chessMove.getStartPosition());
+                testGame.board.addPiece(chessMove.getStartPosition(), null);
+                testGame.board.addPiece(chessMove.getEndPosition(), testPiece);
+                if (testGame.isInCheck(testGame.teamTurn)) {
+                    check = true;
+                } else {
+                    check = false;
+                    break;
                 }
+                testGame.board.addPiece(chessMove.getEndPosition(), testPiece);
+                testGame.board.addPiece(chessMove.getEndPosition(), null);
+            }
+            if (check) {
+                throw new InvalidMoveException("Invalid move");
             }
             ChessPiece piece = board.getPiece(move.getStartPosition());
             if (piece.getPieceType() == ChessPiece.PieceType.PAWN) {
@@ -176,23 +184,29 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
-        boolean d = false;
-        for (int i = 1; i < 9; i++) {
-            for (int j = 1; j < 9; j++) {
-                ChessPosition position = new ChessPosition(i, j);
-                ChessPiece currentPiece = board.getPiece(position);
-                if (currentPiece != null) {
-                    if (currentPiece.getTeamColor() == teamColor) {
-                        Collection<ChessMove> moves = currentPiece.pieceMoves(this.board, position);
-                        if (!moves.isEmpty()) {
-                            d = true;
+        if (isInCheck(teamColor)) {
+            return false;
+        } else {
+            for (int i = 1; i < 9; i++) {
+                for (int j = 1; j < 9; j++) {
+                    ChessPosition position = new ChessPosition(i, j);
+                    ChessPiece currentPiece = board.getPiece(position);
+                    if (currentPiece != null && currentPiece.getTeamColor() == teamColor) {
+                        Collection<ChessMove> moves = validMoves(position);
+                        for (ChessMove move : moves) {
+                            ChessGame testGame = deepCopy();
+                            ChessPiece testPiece = testGame.board.getPiece(move.getStartPosition());
+                            testGame.board.addPiece(move.getStartPosition(), null);
+                            testGame.board.addPiece(move.getEndPosition(), testPiece);
+                            if (!testGame.isInCheck(teamColor)) {
+                                return false;
+                            }
                         }
                     }
                 }
             }
+            return true;
         }
-        return d;
-
     }
 
     /**
@@ -211,6 +225,29 @@ public class ChessGame {
      */
     public ChessBoard getBoard() {
         return board;
+    }
+
+    public ChessGame deepCopy() {
+        ChessGame newGame = new ChessGame();
+        newGame.setTeamTurn(this.teamTurn);
+        newGame.setBoard(deepCopyBoard(this.board));
+        return newGame;
+    }
+
+    private ChessBoard deepCopyBoard(ChessBoard originalBoard) {
+        ChessBoard newBoard = new ChessBoard();
+        for (int i = 1; i <= 8; i++) {
+            for (int j = 1; j <= 8; j++) {
+                ChessPosition position = new ChessPosition(i, j);
+                ChessPiece piece = originalBoard.getPiece(position);
+                if (piece != null) {
+                    newBoard.addPiece(position, new ChessPiece(piece.getTeamColor(), piece.getPieceType()));
+                } else {
+                    newBoard.addPiece(position, null);
+                }
+            }
+        }
+        return newBoard;
     }
 
     @Override
