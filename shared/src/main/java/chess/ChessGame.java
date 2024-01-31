@@ -65,6 +65,29 @@ public class ChessGame {
                     validMoves.add(move);
                 }
             }
+            for (int i = 1; i < 9; i++) {
+                for (int j = 1; j < 9; j++) {
+                    ChessPosition position = new ChessPosition(i, j);
+                    ChessPiece currentPiece = board.getPiece(position);
+                    if (currentPiece != null) {
+                        if (currentPiece.getTeamColor() != piece.getTeamColor() && currentPiece.getPieceType() != ChessPiece.PieceType.PAWN) {
+                            if (currentPiece.getHasMovedTwo()) {
+                                if (currentPiece.getPieceType() == ChessPiece.PieceType.PAWN) {
+                                    if (currentPiece.getTeamColor() == TeamColor.WHITE) {
+                                        if (startPosition.getRow() == 5 && startPosition.getColumn() == j) {
+                                            validMoves.add(new ChessMove(startPosition, new ChessPosition(startPosition.getRow() + 1, startPosition.getColumn()), null));
+                                        }
+                                    } else {
+                                        if (startPosition.getRow() == 4 && startPosition.getColumn() == j) {
+                                            validMoves.add(new ChessMove(startPosition, new ChessPosition(startPosition.getRow() - 1, startPosition.getColumn()), null));
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
             return validMoves;
         }
     }
@@ -113,13 +136,16 @@ public class ChessGame {
                 if (move.getEndPosition().getRow() == 8 || move.getEndPosition().getRow() == 1) {
                     board.addPiece(move.getStartPosition(), null);
                     board.addPiece(move.getEndPosition(), new ChessPiece(piece.getTeamColor(), move.getPromotionPiece()));
+                    piece.setHasMovedTwo(true);
                 } else {
                     board.addPiece(move.getStartPosition(), null);
                     board.addPiece(move.getEndPosition(), piece);
+                    piece.setHasMovedTwo(false);
                 }
             } else {
                 board.addPiece(move.getStartPosition(), null);
                 board.addPiece(move.getEndPosition(), piece);
+                piece.setHasMoved(true);
             }
             if (teamTurn == TeamColor.WHITE) {
                 teamTurn = TeamColor.BLACK;

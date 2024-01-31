@@ -9,7 +9,8 @@ import java.util.Collection;
  * signature of the existing methods.
  */
 public class ChessPiece {
-
+    private boolean hasMoved = false;
+    private boolean hasMovedTwo = false;
     private final ChessGame.TeamColor pieceColor;
     private final PieceType type;
 
@@ -17,6 +18,23 @@ public class ChessPiece {
         this.pieceColor = pieceColor;
         this.type = type;
     }
+
+    public void setHasMoved(boolean hasMoved) {
+        this.hasMoved = hasMoved;
+    }
+
+    public boolean getHasMoved() {
+        return hasMoved;
+    }
+
+    public boolean getHasMovedTwo() {
+        return hasMovedTwo;
+    }
+
+    public void setHasMovedTwo(boolean hasMovedTwo) {
+        this.hasMovedTwo = hasMovedTwo;
+    }
+
 
     /**
      * The various different chess piece options
