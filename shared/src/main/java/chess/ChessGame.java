@@ -14,6 +14,7 @@ public class ChessGame {
     private TeamColor teamTurn = TeamColor.WHITE;
     public ChessBoard board = new ChessBoard();
     private boolean enPassant = false;
+    private boolean castling = false;
 
 
     public ChessGame() {
@@ -92,6 +93,69 @@ public class ChessGame {
                 }
             }
 
+            //Castling
+            if (piece.getPieceType() == ChessPiece.PieceType.KING) {
+
+                if (piece.getTeamColor() == TeamColor.WHITE) {
+                    if (!piece.getHasMoved()) {
+                        if (board.getPiece(new ChessPosition(1, 1)) != null) {
+                            if (board.getPiece(new ChessPosition(1, 1)).getPieceType() == ChessPiece.PieceType.ROOK) {
+                                if (!board.getPiece(new ChessPosition(1, 1)).getHasMoved()) {
+                                    if (board.getPiece(new ChessPosition(1, 2)) == null && board.getPiece(new ChessPosition(1, 3)) == null && board.getPiece(new ChessPosition(1, 4)) == null) {
+                                        if (!isInCheck(TeamColor.WHITE)) {
+                                            validMoves.add(new ChessMove(startPosition, new ChessPosition(1, 3), null));
+                                            castling = true;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    if (!piece.getHasMoved()) {
+                        if (board.getPiece(new ChessPosition(1, 8)) != null) {
+                            if (board.getPiece(new ChessPosition(1, 8)).getPieceType() == ChessPiece.PieceType.ROOK) {
+                                if (!board.getPiece(new ChessPosition(1, 8)).getHasMoved()) {
+                                    if (board.getPiece(new ChessPosition(1, 7)) == null && board.getPiece(new ChessPosition(1, 6)) == null) {
+                                        if (!isInCheck(TeamColor.WHITE)) {
+                                            validMoves.add(new ChessMove(startPosition, new ChessPosition(1, 7), null));
+                                            castling = true;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    if (!piece.getHasMoved()) {
+                        if (board.getPiece(new ChessPosition(8, 1)) != null) {
+                            if (board.getPiece(new ChessPosition(8, 1)).getPieceType() == ChessPiece.PieceType.ROOK) {
+                                if (!board.getPiece(new ChessPosition(8, 1)).getHasMoved()) {
+                                    if (board.getPiece(new ChessPosition(8, 2)) == null && board.getPiece(new ChessPosition(8, 3)) == null && board.getPiece(new ChessPosition(8, 4)) == null) {
+                                        if (!isInCheck(TeamColor.BLACK)) {
+                                            validMoves.add(new ChessMove(startPosition, new ChessPosition(8, 3), null));
+                                            castling = true;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    if (!piece.getHasMoved()) {
+                        if (board.getPiece(new ChessPosition(8, 8)) != null) {
+                            if (board.getPiece(new ChessPosition(8, 8)).getPieceType() == ChessPiece.PieceType.ROOK) {
+                                if (!board.getPiece(new ChessPosition(8, 8)).getHasMoved()) {
+                                    if (board.getPiece(new ChessPosition(8, 7)) == null && board.getPiece(new ChessPosition(8, 6)) == null) {
+                                        if (!isInCheck(TeamColor.BLACK)) {
+                                            validMoves.add(new ChessMove(startPosition, new ChessPosition(8, 7), null));
+                                            castling = true;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
 
             return validMoves;
         }
@@ -151,12 +215,21 @@ public class ChessGame {
                     piece.setEnPass(false);
                 }
             }
-
+            if (castling) {
+                if (move.getEndPosition().getColumn() == 3) {
+                    board.addPiece(new ChessPosition(move.getEndPosition().getRow(), 1), null);
+                    board.addPiece(new ChessPosition(move.getEndPosition().getRow(), 4), new ChessPiece(piece.getTeamColor(), ChessPiece.PieceType.ROOK));
+                } else if (move.getEndPosition().getColumn() == 7) {
+                    board.addPiece(new ChessPosition(move.getEndPosition().getRow(), 8), null);
+                    board.addPiece(new ChessPosition(move.getEndPosition().getRow(), 6), new ChessPiece(piece.getTeamColor(), ChessPiece.PieceType.ROOK));
+                }
+            }
 
             if (piece.getPieceType() == ChessPiece.PieceType.PAWN) {
                 if (move.getEndPosition().getRow() == 8 || move.getEndPosition().getRow() == 1) {
                     board.addPiece(move.getStartPosition(), null);
                     board.addPiece(move.getEndPosition(), new ChessPiece(piece.getTeamColor(), move.getPromotionPiece()));
+
                 } else {
                     board.addPiece(move.getStartPosition(), null);
                     board.addPiece(move.getEndPosition(), piece);
@@ -171,8 +244,8 @@ public class ChessGame {
             } else {
                 board.addPiece(move.getStartPosition(), null);
                 board.addPiece(move.getEndPosition(), piece);
-                //piece.setHasMovedTwo(false);
                 enPassant = false;
+                piece.setHasMoved(true);
             }
             if (teamTurn == TeamColor.WHITE) {
                 teamTurn = TeamColor.BLACK;
