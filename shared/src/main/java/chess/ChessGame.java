@@ -91,43 +91,6 @@ public class ChessGame {
                     }
                 }
             }
-            if (piece.getPieceType() == ChessPiece.PieceType.KING) {
-                if (piece.getTeamColor() == TeamColor.WHITE) {
-                    if (piece.getHasMovedTwo()) {
-                        if (board.getPiece(new ChessPosition(1, 1)) != null) {
-                            if (board.getPiece(new ChessPosition(1, 1)).getPieceType() == ChessPiece.PieceType.ROOK) {
-                                if (board.getPiece(new ChessPosition(1, 1)).getHasMovedTwo()) {
-                                    validMoves.add(new ChessMove(startPosition, new ChessPosition(1, 3), null));
-                                }
-                            }
-                        }
-                        if (board.getPiece(new ChessPosition(1, 8)) != null) {
-                            if (board.getPiece(new ChessPosition(1, 8)).getPieceType() == ChessPiece.PieceType.ROOK) {
-                                if (board.getPiece(new ChessPosition(1, 8)).getHasMovedTwo()) {
-                                    validMoves.add(new ChessMove(startPosition, new ChessPosition(1, 7), null));
-                                }
-                            }
-                        }
-                    }
-                } else {
-                    if (piece.getHasMovedTwo()) {
-                        if (board.getPiece(new ChessPosition(8, 1)) != null) {
-                            if (board.getPiece(new ChessPosition(8, 1)).getPieceType() == ChessPiece.PieceType.ROOK) {
-                                if (board.getPiece(new ChessPosition(8, 1)).getHasMovedTwo()) {
-                                    validMoves.add(new ChessMove(startPosition, new ChessPosition(8, 3), null));
-                                }
-                            }
-                        }
-                        if (board.getPiece(new ChessPosition(8, 8)) != null) {
-                            if (board.getPiece(new ChessPosition(8, 8)).getPieceType() == ChessPiece.PieceType.ROOK) {
-                                if (board.getPiece(new ChessPosition(8, 8)).getHasMovedTwo()) {
-                                    validMoves.add(new ChessMove(startPosition, new ChessPosition(8, 7), null));
-                                }
-                            }
-                        }
-                    }
-                }
-            }
 
 
             return validMoves;
