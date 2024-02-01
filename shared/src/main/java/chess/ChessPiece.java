@@ -11,6 +11,7 @@ import java.util.Collection;
 public class ChessPiece {
     private boolean hasMoved = false;
     private boolean hasMovedTwo = false;
+    private boolean enPass = false;
     private final ChessGame.TeamColor pieceColor;
     private final PieceType type;
 
@@ -33,6 +34,14 @@ public class ChessPiece {
 
     public void setHasMovedTwo(boolean hasMovedTwo) {
         this.hasMovedTwo = hasMovedTwo;
+    }
+
+    public boolean isEnPass() {
+        return enPass;
+    }
+
+    public void setEnPass(boolean enPass) {
+        this.enPass = enPass;
     }
 
 
@@ -102,10 +111,9 @@ public class ChessPiece {
 
     @Override
     public int hashCode() {
-        int result = pieceColor.hashCode();
-        result = 31 * result + type.hashCode();
+        int result = pieceColor != null ? pieceColor.hashCode() : 0;
+        result = 31 * result + (type != null ? type.hashCode() : 0);
         return result;
     }
-
 }
 
