@@ -3,9 +3,9 @@ package dataAccess;
 import model.UserData;
 
 public interface UserDAO {
-    void insertUser(UserData user);
+    void createUser(UserData user);
 
-    UserData findUser(String username);
+    UserData getUser(String username);
 
     void updateUser(UserData user);
 
