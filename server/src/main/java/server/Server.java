@@ -19,6 +19,7 @@ public class Server {
         Spark.init();
         // Register your endpoints and handle exceptions here.
         Spark.post("/user", this::register);
+        Spark.post("/session", this::login);
 
         Spark.awaitInitialization();
         return Spark.port();
@@ -42,4 +43,19 @@ public class Server {
             return new Gson().toJson(Map.of("error", "Error registering user: " + e.getMessage()));
         }
     }
+
+    private Object login(Request req, Response res) {
+        try {
+            var user = new Gson().fromJson(req.body(), UserData.class);
+            ChessService service = new ChessService();
+            var auth = service.login(user);
+            res.type("application/json");
+            return new Gson().toJson(auth);
+        } catch (Exception e) {
+            // Handle exceptions appropriately
+            res.status(400); // Example error handling
+            return new Gson().toJson(Map.of("error", "Error logging in user: " + e.getMessage()));
+        }
+    }
+
 }
