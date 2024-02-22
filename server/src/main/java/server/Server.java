@@ -32,6 +32,7 @@ public class Server {
     private Object register(Request req, Response res) {
         try {
             var user = new Gson().fromJson(req.body(), UserData.class);
+            ChessService service = new ChessService();
             var auth = service.register(user);
             res.type("application/json");
             return new Gson().toJson(auth);

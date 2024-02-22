@@ -1,18 +1,18 @@
 package service;
 
+import dataAccess.DataAccessException;
+import dataAccess.MemoryUserDAO;
 import dataAccess.UserDAO;
 import model.AuthData;
 import model.UserData;
 
+import java.util.UUID;
+
 
 public class ChessService {
-    private final UserDAO userDAO;
+    private final static UserDAO userDAO = new MemoryUserDAO();
 
-    public ChessService(UserDAO userDAO) {
-        this.userDAO = userDAO;
-    }
-
-    public AuthData register(UserData user) {
+    public AuthData register(UserData user) throws DataAccessException {
         String username = user.username();
         String password = user.password();
         String email = user.email();
@@ -23,8 +23,8 @@ public class ChessService {
             return null;
         }
         userDAO.createUser(user);
-
-        return new AuthData("authToken", username);
+        String hello = UUID.randomUUID().toString();
+        return new AuthData(hello, username);
     }
 
     //public AuthData login(UserData user) {
