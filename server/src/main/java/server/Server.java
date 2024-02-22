@@ -20,7 +20,11 @@ public class Server {
         // Register your endpoints and handle exceptions here.
         Spark.post("/user", this::register);
         Spark.post("/session", this::login);
-
+        Spark.delete("/db", this::clear);
+        Spark.delete("/session", this::logout);
+        Spark.get("/game", this::listGame);
+        Spark.post("/game", this::createGame);
+        Spark.put("game/:id", this::joinGame);
         Spark.awaitInitialization();
         return Spark.port();
     }
@@ -28,6 +32,11 @@ public class Server {
     public void stop() {
         Spark.stop();
         Spark.awaitStop();
+    }
+
+    private Object clear(Request req, Response res) {
+        // Clear the database
+        return "";
     }
 
     private Object register(Request req, Response res) {
@@ -56,6 +65,26 @@ public class Server {
             res.status(400); // Example error handling
             return new Gson().toJson(Map.of("error", "Error logging in user: " + e.getMessage()));
         }
+    }
+
+    private Object logout(Request req, Response res) {
+        // Clear the session
+        return "";
+    }
+
+    private Object listGame(Request req, Response res) {
+        // List all games
+        return "";
+    }
+
+    private Object createGame(Request req, Response res) {
+        // Create a new game
+        return "";
+    }
+
+    private Object joinGame(Request req, Response res) {
+        // Join a game
+        return "";
     }
 
 }
