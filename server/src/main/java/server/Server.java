@@ -1,8 +1,10 @@
 package server;
 
 import com.google.gson.Gson;
+import dataAccess.DataAccessException;
 import model.UserData;
 import service.ChessService;
+import service.ResponseException;
 import spark.Request;
 import spark.Response;
 import spark.Spark;
@@ -25,6 +27,7 @@ public class Server {
         Spark.get("/game", this::listGame);
         Spark.post("/game", this::createGame);
         Spark.put("game/:id", this::joinGame);
+        //Spark.exception(ResponseException.class, this::exceptionHandler);
         Spark.awaitInitialization();
         return Spark.port();
     }
@@ -39,7 +42,7 @@ public class Server {
         return "";
     }
 
-    private Object register(Request req, Response res) {
+    private Object register(Request req, Response res) throws ResponseException {
         try {
             var user = new Gson().fromJson(req.body(), UserData.class);
             ChessService service = new ChessService();
@@ -47,23 +50,27 @@ public class Server {
             res.type("application/json");
             return new Gson().toJson(auth);
         } catch (Exception e) {
-            // Handle exceptions appropriately
-            res.status(400); // Example error handling
-            return new Gson().toJson(Map.of("error", "Error registering user: " + e.getMessage()));
+            res.status(400);
+            return new Gson().toJson(Map.of("error", "Error: " + e.getMessage()));
         }
     }
 
-    private Object login(Request req, Response res) {
+    private Object login(Request req, Response res) throws ResponseException {
         try {
             var user = new Gson().fromJson(req.body(), UserData.class);
             ChessService service = new ChessService();
             var auth = service.login(user);
+            res.status(200); // HTTP 200 OK
             res.type("application/json");
             return new Gson().toJson(auth);
-        } catch (Exception e) {
-            // Handle exceptions appropriately
-            res.status(400); // Example error handling
-            return new Gson().toJson(Map.of("error", "Error logging in user: " + e.getMessage()));
+        } catch (ResponseException e) {
+            res.status(e.StatusCode());
+            res.type("application/json");
+            return new Gson().toJson(Map.of("error", "Error: " + e.getMessage()));
+        } catch (DataAccessException e) {
+            res.status(500);
+            res.type("application/json");
+            return new Gson().toJson(Map.of("error", "Error: " + e.getMessage()));
         }
     }
 
@@ -85,6 +92,10 @@ public class Server {
     private Object joinGame(Request req, Response res) {
         // Join a game
         return "";
+    }
+
+    private void exceptionHandler(ResponseException ex, Request req, Response res) {
+        res.status(ex.StatusCode());
     }
 
 }

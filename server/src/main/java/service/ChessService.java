@@ -1,5 +1,6 @@
 package service;
 
+
 import dataAccess.DataAccessException;
 import dataAccess.MemoryUserDAO;
 import dataAccess.UserDAO;
@@ -12,22 +13,22 @@ import java.util.UUID;
 public class ChessService {
     private final static UserDAO userDAO = new MemoryUserDAO();
 
-    public AuthData register(UserData user) throws DataAccessException {
+    public AuthData register(UserData user) throws ResponseException, DataAccessException {
         String username = user.username();
         String password = user.password();
         String email = user.email();
         if (username == null || password == null || email == null) {//IMPLEMENT EXCEPTIONS
-            return null;
+            throw new ResponseException(400, "Bad Request");
         }
         if (userDAO.getUser(username) != null) {//IMPLEMENT EXCEPTIONS
-            return null;
+            throw new ResponseException(403, "already taken");
         }
         userDAO.createUser(user);
         String hello = UUID.randomUUID().toString();
         return new AuthData(hello, username);
     }
 
-    public AuthData login(UserData user) throws DataAccessException {
+    public AuthData login(UserData user) throws ResponseException, DataAccessException {
         String username = user.username();
         String password = user.password();
         if (username == null || password == null) {//IMPLEMENT EXCEPTIONS
@@ -40,7 +41,7 @@ public class ChessService {
         String hello = UUID.randomUUID().toString();
         return new AuthData(hello, username);
     }
-    //}
+
 
     public void logout(UserData user) {
         //IMPLEMENT
