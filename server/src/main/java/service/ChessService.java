@@ -18,10 +18,10 @@ public class ChessService {
         String password = user.password();
         String email = user.email();
         if (username == null || password == null || email == null) {//IMPLEMENT EXCEPTIONS
-            throw new ResponseException(400, "Bad Request");
+            throw new ResponseException(400, "{ \"message\": \"Error: bad request\" }");
         }
         if (userDAO.getUser(username) != null) {//IMPLEMENT EXCEPTIONS
-            throw new ResponseException(403, "already taken");
+            throw new ResponseException(403, "{ \"message\": \"Error: already taken\" }");
         }
         userDAO.createUser(user);
         String hello = UUID.randomUUID().toString();
@@ -32,16 +32,15 @@ public class ChessService {
         String username = user.username();
         String password = user.password();
         if (username == null || password == null) {//IMPLEMENT EXCEPTIONS
-            return null;
+            throw new ResponseException(401, "{ \"message\": \"Error: Invalid Request\" }");
         }
         UserData userFromDB = userDAO.getUser(username);
         if (userFromDB == null || !userFromDB.password().equals(password)) {//IMPLEMENT EXCEPTIONS
-            return null;
+            throw new ResponseException(401, "{ \"message\": \"Error: unauthorized\" }");
         }
         String hello = UUID.randomUUID().toString();
         return new AuthData(hello, username);
     }
-
 
     public void logout(UserData user) {
         //IMPLEMENT

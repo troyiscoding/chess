@@ -9,8 +9,6 @@ import spark.Request;
 import spark.Response;
 import spark.Spark;
 
-import java.util.Map;
-
 public class Server {
 
     public int run(int desiredPort) {
@@ -27,7 +25,7 @@ public class Server {
         Spark.get("/game", this::listGame);
         Spark.post("/game", this::createGame);
         Spark.put("game/:id", this::joinGame);
-        //Spark.exception(ResponseException.class, this::exceptionHandler);
+        Spark.exception(ResponseException.class, this::exceptionHandler);
         Spark.awaitInitialization();
         return Spark.port();
     }
@@ -47,11 +45,15 @@ public class Server {
             var user = new Gson().fromJson(req.body(), UserData.class);
             ChessService service = new ChessService();
             var auth = service.register(user);
+            res.status(200); // HTTP 200 OK
             res.type("application/json");
             return new Gson().toJson(auth);
-        } catch (Exception e) {
-            res.status(400);
-            return new Gson().toJson(Map.of("error", "Error: " + e.getMessage()));
+        } catch (ResponseException e) {
+            res.status(e.StatusCode());
+            return e.getMessage();
+        } catch (DataAccessException e) {
+            res.status(500);
+            return "{ \"message\": \"Error: Internal Server Error\" }";
         }
     }
 
@@ -65,12 +67,10 @@ public class Server {
             return new Gson().toJson(auth);
         } catch (ResponseException e) {
             res.status(e.StatusCode());
-            res.type("application/json");
-            return new Gson().toJson(Map.of("error", "Error: " + e.getMessage()));
+            return e.getMessage();
         } catch (DataAccessException e) {
             res.status(500);
-            res.type("application/json");
-            return new Gson().toJson(Map.of("error", "Error: " + e.getMessage()));
+            return "{ \"message\": \"Error: Internal Server Error\" }";
         }
     }
 
