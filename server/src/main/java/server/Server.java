@@ -75,7 +75,7 @@ public class Server {
     }
 
     private Object logout(Request req, Response res) {
-        // Clear the session
+        // Logout
         return "";
     }
 
