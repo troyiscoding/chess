@@ -60,4 +60,17 @@ public class UserService {
         userDAO.clear();
         authDAO.clear();
     }
+
+    public static boolean validateAuthTokenBoolean(String authToken) throws ResponseException, DataAccessException {
+        if (authToken == null || authToken.isEmpty()) {
+            throw new ResponseException(401, "{ \"message\": \"Error: unauthorized\" }");
+        }
+        AuthData authData = authDAO.getAuth(authToken);
+        if (authData == null) {
+            throw new ResponseException(401, "{ \"message\": \"Error: unauthorized\" }");
+        }
+        return true;
+
+    }
+
 }

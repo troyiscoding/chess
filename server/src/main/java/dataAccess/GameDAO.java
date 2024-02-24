@@ -2,12 +2,18 @@ package dataAccess;
 
 import model.GameData;
 
+import java.util.Map;
+
 public interface GameDAO {
-    void insertGame(GameData game);
+    void insertGame(int gameID, GameData game);
 
     GameData findGame(int gameID);
 
     void updateGame(GameData game);
 
-    void deleteGame(int gameID);
+    public void clear();
+
+    public Map<Integer, GameData> getGames() throws DataAccessException;
+
+
 }

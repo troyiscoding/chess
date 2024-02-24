@@ -2,18 +2,22 @@ package server;
 
 import com.google.gson.Gson;
 import dataAccess.DataAccessException;
+import model.GameData;
 import model.UserData;
-import service.UserService;
+import service.GameService;
 import service.ResponseException;
+import service.UserService;
 import spark.Request;
 import spark.Response;
 import spark.Spark;
 
 public class Server {
     private final UserService userService;
+    private final GameService gameService;
 
     public Server() {
         this.userService = new UserService();
+        this.gameService = new GameService();
     }
 
     public int run(int desiredPort) {
@@ -102,18 +106,41 @@ public class Server {
     }
 
     private Object listGame(Request req, Response res) {
-        // List all games
+
+
         return "";
     }
 
     private Object createGame(Request req, Response res) throws ResponseException, DataAccessException {
-        // Create a game
-        return "";
+        try {
+            String authString = req.headers("Authorization");
+            var gameData = new Gson().fromJson(req.body(), GameData.class);
+            var returnGameData = gameService.createGame(gameData, authString);
+            res.status(200);
+            res.type("application/json");
+            res.body(new Gson().toJson(returnGameData));
+            return new Gson().toJson(returnGameData);
+            //LIKE WILL THAT EVEN WORK
+        } catch (ResponseException e) {
+            res.status(e.StatusCode());
+            return e.getMessage();
+        } catch (DataAccessException e) {
+            res.status(500);
+            return "{ \"message\": \"Error: Internal Server Error\" }";
+        }
     }
 
     private Object joinGame(Request req, Response res) {
-        // Join a game
-        return "";
+        try {
+            String authString = req.headers("Authorization");
+            int gameID = Integer.parseInt(req.params(":id"));
+            gameService.joinGame(gameID, authString);
+            res.status(200);
+            return "";
+        } catch (ResponseException e) {
+            res.status(e.StatusCode());
+            return e.getMessage();
+        }
     }
 
     private void exceptionHandler(ResponseException ex, Request req, Response res) {
