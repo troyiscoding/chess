@@ -7,7 +7,7 @@ public interface AuthDAO {
 
     AuthData getAuth(String authToken) throws DataAccessException;
 
-    void updateAuth(AuthData auth) throws DataAccessException;
-
     void deleteAuth(String authToken) throws DataAccessException;
+
+    void clear() throws DataAccessException;
 }
