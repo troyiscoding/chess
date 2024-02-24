@@ -7,9 +7,12 @@ import java.util.Map;
 
 public class MemoryGameDAO implements GameDAO {
     final static private Map<Integer, GameData> games = new HashMap<>();
+    static private int gameID = 0;
 
-    public void insertGame(int gameID, GameData game) {
+    public int insertGame(GameData game) {
+        gameID++;
         games.put(gameID, game);
+        return gameID;
     }
 
     public GameData findGame(int gameID) {

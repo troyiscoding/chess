@@ -5,7 +5,7 @@ import model.GameData;
 import java.util.Map;
 
 public interface GameDAO {
-    void insertGame(int gameID, GameData game);
+    int insertGame(GameData game);
 
     GameData findGame(int gameID);
 

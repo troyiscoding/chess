@@ -152,4 +152,19 @@ class UserServiceTest {
         });
     }
 
+    //EXTRA TESTS FOR HELPER FUNCTION
+    @Test
+    void validateAuthTokenBooleanSuccess() throws ResponseException, DataAccessException {
+        UserData user = new UserData("testUserToken", "testPassword", "testEmail");
+        AuthData authData = userService.register(user);
+        boolean isValid = UserService.validateAuthTokenBoolean(authData.authToken());
+        assertTrue(isValid);
+    }
+
+    @Test
+    void validateAuthTokenBooleanFailure() throws DataAccessException {
+        assertThrows(ResponseException.class, () -> UserService.validateAuthTokenBoolean(null));
+        assertThrows(ResponseException.class, () -> UserService.validateAuthTokenBoolean("incorrectToken"));
+    }
+
 }
