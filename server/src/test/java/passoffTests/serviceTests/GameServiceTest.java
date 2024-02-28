@@ -19,7 +19,7 @@ public class GameServiceTest {
 
     private UserService userService;
     private GameService gameService;
-    
+
     @BeforeEach
     void setUp() {
         gameService = new GameService();
@@ -54,10 +54,10 @@ public class GameServiceTest {
     void listGamesSuccess() throws ResponseException, DataAccessException {
         //Insert a few games
         GameData game = new GameData(1, "whiteUser1", "blackUser1", "testgame1", null);
-        UserData user = new UserData("testUser", "testPassword", "testEmail");
-        AuthData authData = userService.register(user);
+        UserData user = new UserData("CHESS", "testPassword", "testEmail");
+        AuthData authData = assertDoesNotThrow(() -> userService.register(user));
         assertNotNull(authData);
-        assertEquals("testUser", authData.username());
+        assertEquals("CHESS", authData.username());
 
         //Create a game
         GameData createdGame = gameService.createGame(game, authData.authToken());
@@ -96,10 +96,10 @@ public class GameServiceTest {
         assertThrows(ResponseException.class, () -> gameService.listGames(""));
 
         //Insert a few games
-        UserData user = new UserData("testUser", "testPassword", "testEmail");
-        AuthData authData = userService.register(user);
+        UserData user = new UserData("Hamburger", "testPassword", "testEmail");
+        AuthData authData = assertDoesNotThrow(() -> userService.register(user));
         assertNotNull(authData);
-        assertEquals("testUser", authData.username());
+        assertEquals("Hamburger", authData.username());
 
         // Call the listGames method with a valid auth token
         ArrayList<ListResponse> gamesList = gameService.listGames(authData.authToken());
