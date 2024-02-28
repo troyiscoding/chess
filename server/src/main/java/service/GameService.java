@@ -17,7 +17,7 @@ public class GameService {
 
     public GameData createGame(GameData game, String authToken) throws ResponseException, DataAccessException {
         if (game == null || authToken == null) {
-            throw new ResponseException(400, "bad request");
+            throw new ResponseException(400, "{ \"message\": \"Error: bad request\" }");
         }
         if (UserService.validateAuthTokenBoolean(authToken)) {
             if (gameDAO.getGames().contains(game)) {
@@ -26,28 +26,47 @@ public class GameService {
             int gameID = gameDAO.insertGame(game);
             return new GameData(gameID, null, null, null, null);
         } else {
-            throw new ResponseException(401, "unauthorized");
+            throw new ResponseException(401, "{ \"message\": \"Error: unauthorized\" }");
         }
     }
 
-    public void joinGame(JoinRequest gameData, String authToken) throws ResponseException, DataAccessException {
+    public void joinGame(JoinRequest request, String authToken) throws ResponseException, DataAccessException {
         if (authToken == null) {
             throw new ResponseException(401, "unauthorized");
         }
-        if (gameData == null) {
-            throw new ResponseException(400, "Error: bad request");
+        if (request == null) {
+            throw new ResponseException(400, "{ \"message\": \"Error: bad request\" }");
         }
-        if (gameDAO.findGame(gameData.gameID()) == null) {
-            throw new ResponseException(400, "Error: bad request");
+        if (gameDAO.findGame(request.gameID()) == null) {
+            throw new ResponseException(400, "{ \"message\": \"Error: bad request\" }");
         }
-        // if (gameDAO.getGames().contains(gameData)) {
-        //   throw new ResponseException(403, "already taken");
-        //}
+        if (request.gameID() == 0) {
+            throw new ResponseException(400, "{ \"message\": \"Error: bad request\" }");
+        }
         if (UserService.validateAuthTokenBoolean(authToken)) {
-            GameData game = gameDAO.findGame(gameData.gameID());
-            gameDAO.updateGame(game);
+            GameData game = gameDAO.findGame(request.gameID());
+            String playerColor = request.playerColor();
+            int gameID = request.gameID();
+            String username = UserService.validateAuthTokenString(authToken);
+            if (playerColor == null || playerColor.isEmpty()) {
+                //set spectator possibly in the future
+            } else if (playerColor.equals("black") || playerColor.equals("BLACK")) {
+                if (game.blackUsername() == null) {
+                    gameDAO.updateGame(new GameData(gameID, game.whiteUsername(), username, game.gameName(), game.game()));
+                } else {
+                    throw new ResponseException(403, "{ \"message\": \"Error: already taken\" }");
+                }
+            } else if (playerColor.equals("white") || playerColor.equals("WHITE")) {
+                if (game.whiteUsername() == null) {
+                    gameDAO.updateGame(new GameData(gameID, username, game.blackUsername(), game.gameName(), game.game()));
+                } else {
+                    throw new ResponseException(403, "{ \"message\": \"Error: already taken\" }");
+                }
+            } else {
+                throw new ResponseException(403, "{ \"message\": \"Error: already taken\" }");
+            }
         } else {
-            throw new ResponseException(401, "unauthorized");
+            throw new ResponseException(401, "{ \"message\": \"Error: unauthorized\" }");
         }
     }
 
@@ -65,7 +84,7 @@ public class GameService {
             }
             return returnGame;
         } else {
-            throw new ResponseException(401, "Error: unauthorized");
+            throw new ResponseException(401, "{ \"message\": \"Error: unauthorized\" }");
         }
     }
 

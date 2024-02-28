@@ -19,8 +19,7 @@ public class GameServiceTest {
 
     private UserService userService;
     private GameService gameService;
-
-
+    
     @BeforeEach
     void setUp() {
         gameService = new GameService();

@@ -70,7 +70,17 @@ public class UserService {
             throw new ResponseException(401, "{ \"message\": \"Error: unauthorized\" }");
         }
         return true;
+    }
 
+    public static String validateAuthTokenString(String authToken) throws ResponseException, DataAccessException {
+        if (authToken == null || authToken.isEmpty()) {
+            throw new ResponseException(401, "{ \"message\": \"Error: unauthorized\" }");
+        }
+        AuthData authData = authDAO.getAuth(authToken);
+        if (authData == null) {
+            throw new ResponseException(401, "{ \"message\": \"Error: unauthorized\" }");
+        }
+        return authData.username();
     }
 
 }
