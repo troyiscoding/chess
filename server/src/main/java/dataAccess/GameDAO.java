@@ -2,18 +2,18 @@ package dataAccess;
 
 import model.GameData;
 
-import java.util.Map;
+import java.util.HashSet;
 
 public interface GameDAO {
     int insertGame(GameData game);
 
     GameData findGame(int gameID);
 
-    void updateGame(GameData game);
+    void updateGame(GameData game) throws DataAccessException;
 
-    public void clear();
+    void clear();
 
-    public Map<Integer, GameData> getGames() throws DataAccessException;
+    HashSet<GameData> getGames() throws DataAccessException;
 
 
 }

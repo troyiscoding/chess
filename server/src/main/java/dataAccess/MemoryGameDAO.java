@@ -2,15 +2,16 @@ package dataAccess;
 
 import model.GameData;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class MemoryGameDAO implements GameDAO {
     final static private Map<Integer, GameData> games = new HashMap<>();
-    static private int gameID = 0;
+
 
     public int insertGame(GameData game) {
-        gameID++;
+        Random rand = new Random();
+        int gameID = rand.nextInt(1000);
+        game = new GameData(gameID, game.whiteUsername(), game.blackUsername(), game.gameName(), game.game());
         games.put(gameID, game);
         return gameID;
     }
@@ -19,7 +20,10 @@ public class MemoryGameDAO implements GameDAO {
         return games.get(gameID);
     }
 
-    public void updateGame(GameData game) {
+    public void updateGame(GameData game) throws DataAccessException {
+        if (game == null) {
+            throw new DataAccessException("Game does not exist");
+        }
         games.put(game.gameID(), game);
     }
 
@@ -27,7 +31,7 @@ public class MemoryGameDAO implements GameDAO {
         games.clear();
     }
 
-    public Map<Integer, GameData> getGames() throws DataAccessException {
-        return games;
+    public HashSet<GameData> getGames() throws DataAccessException {
+        return new HashSet<>(games.values());
     }
 }

@@ -2,6 +2,7 @@ package server;
 
 import com.google.gson.Gson;
 import dataAccess.DataAccessException;
+import handler.JoinRequest;
 import model.GameData;
 import model.UserData;
 import service.GameService;
@@ -10,6 +11,8 @@ import service.UserService;
 import spark.Request;
 import spark.Response;
 import spark.Spark;
+
+import java.util.Map;
 
 public class Server {
     private final UserService userService;
@@ -33,7 +36,7 @@ public class Server {
         Spark.delete("/session", this::logout);
         Spark.get("/game", this::listGame);
         Spark.post("/game", this::createGame);
-        Spark.put("game/:id", this::joinGame);
+        Spark.put("/game", this::joinGame);
         Spark.exception(ResponseException.class, this::exceptionHandler);
         Spark.awaitInitialization();
         return Spark.port();
@@ -44,9 +47,11 @@ public class Server {
         Spark.awaitStop();
     }
 
-    private Object clear(Request req, Response res) {
+    private Object clear(Request req, Response res) throws DataAccessException {
         try {
             userService.clear();
+            gameService.clear();
+            res.type("application/json");
             res.status(200);
             return "";
         } catch (DataAccessException e) {
@@ -105,10 +110,20 @@ public class Server {
         }
     }
 
-    private Object listGame(Request req, Response res) {
-
-
-        return "";
+    private Object listGame(Request req, Response res) throws ResponseException, DataAccessException {
+        try {
+            String authString = req.headers("Authorization");
+            var gameData = gameService.listGames(authString);
+            res.status(200);
+            res.type("application/json");
+            return new Gson().toJson(Map.of("games", gameData));
+        } catch (ResponseException e) {
+            res.status(e.StatusCode());
+            return e.getMessage();
+        } catch (DataAccessException e) {
+            res.status(500);
+            return "{ \"message\": \"Error: Internal Server Error\" }";
+        }
     }
 
     private Object createGame(Request req, Response res) throws ResponseException, DataAccessException {
@@ -120,7 +135,6 @@ public class Server {
             res.type("application/json");
             res.body(new Gson().toJson(returnGameData));
             return new Gson().toJson(returnGameData);
-            //LIKE WILL THAT EVEN WORK
         } catch (ResponseException e) {
             res.status(e.StatusCode());
             return e.getMessage();
@@ -130,16 +144,19 @@ public class Server {
         }
     }
 
-    private Object joinGame(Request req, Response res) {
+    private Object joinGame(Request req, Response res) throws ResponseException, DataAccessException {
         try {
-            String authString = req.headers("Authorization");
-            int gameID = Integer.parseInt(req.params(":id"));
-            gameService.joinGame(gameID, authString);
+            String authString = req.headers("authorization");
+            var joinRequest = new Gson().fromJson(req.body(), JoinRequest.class);
+            gameService.joinGame(joinRequest, authString);
             res.status(200);
             return "";
         } catch (ResponseException e) {
             res.status(e.StatusCode());
             return e.getMessage();
+        } catch (DataAccessException e) {
+            res.status(500);
+            return "{ \"message\": \"Error: Internal Server Error\" }";
         }
     }
 
