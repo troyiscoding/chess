@@ -21,9 +21,11 @@ public class GameServiceTest {
     private GameService gameService;
 
     @BeforeEach
-    void setUp() {
+    void setUp() throws DataAccessException {
         gameService = new GameService();
         userService = new UserService();
+        gameService.clear();
+        userService.clear();
     }
 
     @Test
