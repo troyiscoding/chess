@@ -9,8 +9,11 @@ import java.util.UUID;
 
 
 public class UserService {
-    private final static UserDAO userDAO = new MemoryUserDAO();
-    private final static AuthDAO authDAO = new MemoryAuthDAO();
+    //to switch back to memory change to = new MemoryUserDAO();
+    private final static UserDAO userDAO = new DatabaseUserDAO();
+
+    //to switch back to memory change to = new MemoryAuthDAO();
+    private final static AuthDAO authDAO = new DatabaseAuthDAO();
 
     public AuthData register(UserData user) throws ResponseException, DataAccessException {
         String username = user.username();

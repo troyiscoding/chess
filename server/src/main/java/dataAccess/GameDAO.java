@@ -14,6 +14,4 @@ public interface GameDAO {
     void clear();
 
     HashSet<GameData> getGames() throws DataAccessException;
-
-
 }

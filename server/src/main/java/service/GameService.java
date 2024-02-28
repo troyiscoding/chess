@@ -1,8 +1,6 @@
 package service;
 
-import dataAccess.DataAccessException;
-import dataAccess.GameDAO;
-import dataAccess.MemoryGameDAO;
+import dataAccess.*;
 import handler.JoinRequest;
 import model.GameData;
 
@@ -12,7 +10,8 @@ import java.util.HashSet;
 import handler.ListResponse;
 
 public class GameService {
-    private final static GameDAO gameDAO = new MemoryGameDAO();
+    //TO SWITCH BACK TO MEMORY do = new MemoryGameDAO();
+    private final static GameDAO gameDAO = new DatabaseGameDAO();
 
 
     public GameData createGame(GameData game, String authToken) throws ResponseException, DataAccessException {
