@@ -21,10 +21,10 @@ class UserServiceTest {
 
     @Test
     void registerSuccess() throws ResponseException, DataAccessException {
-        UserData user = new UserData("testUser", "testPassword", "testEmail");
-        AuthData authData = userService.register(user);
+        UserData user = new UserData("testMyUser", "testPassword", "testEmail");
+        AuthData authData = assertDoesNotThrow(() -> userService.register(user));
         assertNotNull(authData);
-        assertEquals("testUser", authData.username());
+        assertEquals("testMyUser", authData.username());
     }
 
     @Test
@@ -175,5 +175,6 @@ class UserServiceTest {
         userService.register(new UserData("testUserTokenStringFailure", "testPassword", "testEmail"));
         assertThrows(ResponseException.class, () -> UserService.validateAuthTokenString("incorrectToken"));
     }
+
 
 }
