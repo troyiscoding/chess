@@ -126,14 +126,10 @@ class UserServiceTest {
     @Test
     void logoutFailure() throws ResponseException, DataAccessException {
         // Negative test logout with null username
-        assertThrows(ResponseException.class, () -> {
-            userService.logout(null);
-        });
+        assertThrows(ResponseException.class, () -> userService.logout(null));
 
         // test logout with incorrect username
-        assertThrows(ResponseException.class, () -> {
-            userService.logout("incorrectToken");
-        });
+        assertThrows(ResponseException.class, () -> userService.logout("incorrectToken"));
     }
 
 
@@ -147,9 +143,7 @@ class UserServiceTest {
         userService.clear(); // Clear the data
 
         // Try to login with the same user, it should throw an exception because the data was cleared
-        assertThrows(ResponseException.class, () -> {
-            userService.login(user);
-        });
+        assertThrows(ResponseException.class, () -> userService.login(user));
     }
 
     //EXTRA TESTS FOR HELPER FUNCTION
@@ -165,6 +159,21 @@ class UserServiceTest {
     void validateAuthTokenBooleanFailure() throws DataAccessException {
         assertThrows(ResponseException.class, () -> UserService.validateAuthTokenBoolean(null));
         assertThrows(ResponseException.class, () -> UserService.validateAuthTokenBoolean("incorrectToken"));
+    }
+
+    @Test
+    void validateAuthTokenStringSuccess() throws ResponseException, DataAccessException {
+        UserData user = new UserData("testUserTokenString", "testPassword", "testEmail");
+        AuthData authData = userService.register(user);
+        String username = UserService.validateAuthTokenString(authData.authToken());
+        assertEquals("testUserTokenString", username);
+    }
+
+    @Test
+    void validateAuthTokenStringFailure() throws ResponseException, DataAccessException {
+        assertThrows(ResponseException.class, () -> UserService.validateAuthTokenString(null));
+        userService.register(new UserData("testUserTokenStringFailure", "testPassword", "testEmail"));
+        assertThrows(ResponseException.class, () -> UserService.validateAuthTokenString("incorrectToken"));
     }
 
 }
