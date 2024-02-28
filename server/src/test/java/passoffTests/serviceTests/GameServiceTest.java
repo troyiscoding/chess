@@ -1,6 +1,7 @@
 package passoffTests.serviceTests;
 
 import dataAccess.DataAccessException;
+import handler.JoinRequest;
 import handler.ListResponse;
 import model.AuthData;
 import model.GameData;
@@ -12,6 +13,7 @@ import service.ResponseException;
 import service.UserService;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -113,5 +115,67 @@ public class GameServiceTest {
         assertTrue(gamesList.isEmpty());
     }
 
+    @Test
+    void joinGameSuccess() throws ResponseException, DataAccessException {
+        GameData game = new GameData(5, null, null, "joinGame", null);
+        UserData user = new UserData("joinMyUser", "testPassword", "testEmail");
+        AuthData authData = assertDoesNotThrow(() -> userService.register(user));
+        assertNotNull(authData);
+        assertEquals("joinMyUser", authData.username());
 
+        //Create a game
+        GameData createdGame = gameService.createGame(game, authData.authToken());
+        assertNotNull(createdGame);
+
+        // Create a JoinRequest object
+        JoinRequest joinRequest = new JoinRequest("WHITE", createdGame.gameID());
+
+        //Call joinGame() method
+        gameService.joinGame(joinRequest, authData.authToken());
+
+
+        //Check that the game now includes the user
+        List<ListResponse> gamesList = gameService.listGames(authData.authToken());
+        boolean userInGame = gamesList.stream().anyMatch(games -> games.whiteUsername().equals("joinMyUser"));
+        assertTrue(userInGame);
+    }
+
+    @Test
+    void joinGameFailure() {
+        GameData game = new GameData(5, null, null, "joinGame", null);
+        UserData user = new UserData("joinMyUser", "testPassword", "testEmail");
+        AuthData authData = assertDoesNotThrow(() -> userService.register(user));
+        assertNotNull(authData);
+        assertEquals("joinMyUser", authData.username());
+
+        //Create a game
+        GameData createdGame = assertDoesNotThrow(() -> gameService.createGame(game, authData.authToken()));
+        assertNotNull(createdGame);
+
+        // Create a JoinRequest object
+        JoinRequest joinRequest = new JoinRequest("WHITE", createdGame.gameID());
+
+        //Call joinGame() method
+        assertDoesNotThrow(() -> gameService.joinGame(joinRequest, authData.authToken()));
+
+        //Check that the game now includes the user
+        List<ListResponse> gamesList = assertDoesNotThrow(() -> gameService.listGames(authData.authToken()));
+        boolean userInGame = gamesList.stream().anyMatch(games -> games.whiteUsername().equals("joinMyUser"));
+        assertTrue(userInGame);
+
+        // Call joinGame with a null authToken, empty authToken, or invalid authToken
+        assertThrows(ResponseException.class, () -> gameService.joinGame(joinRequest, null));
+        assertThrows(ResponseException.class, () -> gameService.joinGame(joinRequest, ""));
+        assertThrows(ResponseException.class, () -> gameService.joinGame(joinRequest, "invalid"));
+
+        // Call joinGame with a null JoinRequest
+        assertThrows(ResponseException.class, () -> gameService.joinGame(null, authData.authToken()));
+
+        // Try adding to add the user to the game again
+        assertThrows(ResponseException.class, () -> gameService.joinGame(joinRequest, authData.authToken()));
+
+        // Try adding to add the user to a game that does not exist
+        JoinRequest joinRequest2 = new JoinRequest("BLACK", 21);
+        assertThrows(ResponseException.class, () -> gameService.joinGame(joinRequest2, authData.authToken()));
+    }
 }
