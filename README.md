@@ -2,7 +2,7 @@
 
 This project demonstrates mastery of proper software design, client/server architecture, networking using HTTP and WebSocket, database persistence, unit testing, serialization, and security.
 
-##SQL Design Diagram
+## SQL Design Diagram
 [![SQL Design Diagram](drawSQL.png)](https://drawsql.app/teams/team-2917/diagrams/chess)
 
 ## Server Design Sequence Diagram
