@@ -15,6 +15,7 @@ public class UserService {
     //to switch back to memory change to = new MemoryAuthDAO();
     private final static AuthDAO authDAO = new DatabaseAuthDAO();
 
+
     public AuthData register(UserData user) throws ResponseException, DataAccessException {
         String username = user.username();
         String password = user.password();
