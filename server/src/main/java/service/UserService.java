@@ -13,7 +13,7 @@ public class UserService {
     private final static UserDAO userDAO = new DatabaseUserDAO();
 
     //to switch back to memory change to = new MemoryAuthDAO();
-    private final static AuthDAO authDAO = new DatabaseAuthDAO();
+    private final static AuthDAO authDAO = new MemoryAuthDAO();// new DatabaseAuthDAO();
 
 
     public AuthData register(UserData user) throws ResponseException, DataAccessException {

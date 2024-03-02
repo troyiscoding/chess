@@ -1,5 +1,6 @@
 package passoffTests.serviceTests;
 
+import chess.ChessGame;
 import dataAccess.DataAccessException;
 import handler.JoinRequest;
 import handler.ListResponse;
@@ -32,7 +33,9 @@ public class GameServiceTest {
 
     @Test
     void createGameSuccess() throws ResponseException, DataAccessException {
-        GameData game = new GameData(1, "player1", "player2", "gameStatus", null);
+        //Create a game
+        ChessGame insertGame = new ChessGame();
+        GameData game = new GameData(1, "player1", "player2", "gameStatus", insertGame);
         UserData user = new UserData("testUser", "testPassword", "testEmail");
         AuthData authData = userService.register(user);
         assertNotNull(authData);
@@ -41,7 +44,7 @@ public class GameServiceTest {
         //Create a game
         GameData createdGame = gameService.createGame(game, authData.authToken());
         assertNotNull(createdGame);
-        GameData game2 = new GameData(1, "player1", "player2", "gameStatus", null);
+        GameData game2 = new GameData(1, "player1", "player2", "gameStatus", insertGame);
         GameData createdGame2 = gameService.createGame(game2, authData.authToken());
         assertNotNull(createdGame2);
         assertNotEquals(createdGame.gameID(), createdGame2.gameID());
@@ -175,7 +178,7 @@ public class GameServiceTest {
         assertThrows(ResponseException.class, () -> gameService.joinGame(joinRequest, authData.authToken()));
 
         // Try adding to add the user to a game that does not exist
-        JoinRequest joinRequest2 = new JoinRequest("BLACK", 21);
+        JoinRequest joinRequest2 = new JoinRequest("BLACK", 4561);
         assertThrows(ResponseException.class, () -> gameService.joinGame(joinRequest2, authData.authToken()));
     }
 }

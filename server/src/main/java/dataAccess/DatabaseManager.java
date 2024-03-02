@@ -81,5 +81,13 @@ public class DatabaseManager {
         }
     }
 
+    public static void executeStatement(String sql) throws DataAccessException {
+        try (Statement statement = DatabaseManager.getConnection().createStatement()) {
+            statement.executeUpdate(sql);
+        } catch (SQLException e) {
+            throw new DataAccessException("Error: failed to execute statement");
+        }
+    }
+
 
 }
