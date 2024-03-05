@@ -7,13 +7,14 @@ import model.UserData;
 
 import java.util.UUID;
 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 public class UserService {
     //to switch back to memory change to = new MemoryUserDAO();
     private final static UserDAO userDAO = new DatabaseUserDAO();
 
     //to switch back to memory change to = new MemoryAuthDAO();
-    private final static AuthDAO authDAO = new MemoryAuthDAO();// new DatabaseAuthDAO();
+    private final static AuthDAO authDAO = new DatabaseAuthDAO();
 
 
     public AuthData register(UserData user) throws ResponseException, DataAccessException {
@@ -26,6 +27,8 @@ public class UserService {
         if (userDAO.getUser(username) != null) {
             throw new ResponseException(403, "{ \"message\": \"Error: already taken\" }");
         }
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        user = new UserData(username, encoder.encode(password), email);
         userDAO.createUser(user);
         AuthData authData = new AuthData(UUID.randomUUID().toString(), username);
         authDAO.createAuth(authData);
@@ -39,7 +42,10 @@ public class UserService {
             throw new ResponseException(401, "{ \"message\": \"Error: Invalid Request\" }");
         }
         UserData userFromDB = userDAO.getUser(username);
-        if (userFromDB == null || !userFromDB.password().equals(password)) {
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+
+
+        if (userFromDB == null || !encoder.matches(password, userFromDB.password())) {
             throw new ResponseException(401, "{ \"message\": \"Error: unauthorized\" }");
         }
         AuthData authData = new AuthData(UUID.randomUUID().toString(), username);

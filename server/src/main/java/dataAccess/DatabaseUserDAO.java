@@ -7,7 +7,6 @@ import java.sql.Statement;
 
 import static dataAccess.DatabaseManager.*;
 
-
 public class DatabaseUserDAO implements UserDAO {
 
     private static final String[] CREATE_TABLE_STATEMENTS = {
@@ -22,7 +21,10 @@ public class DatabaseUserDAO implements UserDAO {
 
     public void createUser(UserData user) throws DataAccessException {
         configureDB(CREATE_TABLE_STATEMENTS);
-        String sql = "INSERT INTO `User` (`username`, `password`, `email`) VALUES ('" + user.username() + "', '" + user.password() + "', '" + user.email() + "');";
+        //Implement password hashing
+        //BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        //String hashedPassword = encoder.encode(user.password());
+        String sql = "INSERT INTO `User` (`username`, `password`, `email`) VALUES ('" + user.username() + "', '" + user.password() + "', '" + user.email() + "')";
         executeStatement(sql);
 
     }
@@ -34,6 +36,7 @@ public class DatabaseUserDAO implements UserDAO {
                     "SELECT * FROM `User` WHERE `username` = '" + username + "';");
             if (result.next()) {
                 return new UserData(result.getString("username"), result.getString("password"), result.getString("email"));
+
             }
         } catch (SQLException e) {
             throw new DataAccessException("Error: failed to get user");
@@ -46,4 +49,5 @@ public class DatabaseUserDAO implements UserDAO {
         String sql = "DELETE FROM `User`;";
         executeStatement(sql);
     }
+
 }
