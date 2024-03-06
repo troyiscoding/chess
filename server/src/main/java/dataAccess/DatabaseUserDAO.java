@@ -21,9 +21,6 @@ public class DatabaseUserDAO implements UserDAO {
 
     public void createUser(UserData user) throws DataAccessException {
         configureDB(CREATE_TABLE_STATEMENTS);
-        //Implement password hashing
-        //BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-        //String hashedPassword = encoder.encode(user.password());
         String sql = "INSERT INTO `User` (`username`, `password`, `email`) VALUES ('" + user.username() + "', '" + user.password() + "', '" + user.email() + "')";
         executeStatement(sql);
 
@@ -33,7 +30,7 @@ public class DatabaseUserDAO implements UserDAO {
         configureDB(CREATE_TABLE_STATEMENTS);
         try (Statement statement = getConnection().createStatement()) {
             var result = statement.executeQuery(
-                    "SELECT * FROM `User` WHERE `username` = '" + username + "';");
+                    "SELECT * FROM `User` WHERE `username` = '" + username + "'");
             if (result.next()) {
                 return new UserData(result.getString("username"), result.getString("password"), result.getString("email"));
 
@@ -45,9 +42,8 @@ public class DatabaseUserDAO implements UserDAO {
     }
 
     public void clear() throws DataAccessException {
-        configureDB(CREATE_TABLE_STATEMENTS);
-        String sql = "DELETE FROM `User`;";
-        executeStatement(sql);
+        // configureDB(CREATE_TABLE_STATEMENTS);
+        executeStatement("TRUNCATE `User`");
     }
 
 }
