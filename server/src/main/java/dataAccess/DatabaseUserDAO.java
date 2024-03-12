@@ -42,7 +42,7 @@ public class DatabaseUserDAO implements UserDAO {
     }
 
     public void clear() throws DataAccessException {
-        // configureDB(CREATE_TABLE_STATEMENTS);
+        configureDB(CREATE_TABLE_STATEMENTS);
         executeStatement("TRUNCATE `User`");
     }
 
