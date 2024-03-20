@@ -1,27 +1,28 @@
 package ui;
 
-import java.io.PrintStream;
-import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
-import java.util.Random;
 
 import static ui.EscapeSequences.*;
 
 
-public class PreLoginClient {
-    private static final int BOARD_SIZE_IN_SQUARES = 8;
-    private static final int SQUARE_SIZE_IN_CHARS = 8;
-    private static final int LINE_WIDTH_IN_CHARS = 1;
-    private static final String EMPTY = "   ";
+public class PreLogin {
+
 
     public static void main(String[] args) {
-        var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
 
-        out.print(ERASE_SCREEN);
-
-        out.print(SET_TEXT_COLOR_WHITE);
+        var preLogin = new PreLogin();
+        System.out.println(preLogin.eval("help"));
+        System.out.println(preLogin.eval("login"));
+        System.out.println(preLogin.eval("login user pass"));
+        System.out.println(preLogin.eval("register"));
+        System.out.println(preLogin.eval("register user pass"));
     }
 
+    //var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
+//
+//        out.print(ERASE_SCREEN);
+//
+//        out.print(SET_TEXT_COLOR_WHITE);
     public String eval(String input) {
         var tokens = input.toLowerCase().split(" ");
         var cmd = (tokens.length > 0) ? tokens[0] : "help";
@@ -38,11 +39,12 @@ public class PreLoginClient {
     //Displays text informing the user what actions they can take.
     public String helpLogin() {
         return "Available commands:\n" +
-                "register - <USERNAME> <PASSWORD> <EMAIL>\n" +
-                "login - <USERNAME> <PASSWORD>\n" +
-                "quit - Exit the program.\n" +
-                "help - Help with possible commands\n";
+                SET_TEXT_COLOR_BLUE + "register -" + SET_TEXT_COLOR_WHITE + " <USERNAME> <PASSWORD> <EMAIL>\n" +
+                SET_TEXT_COLOR_BLUE + "login -" + SET_TEXT_COLOR_WHITE + " <USERNAME> <PASSWORD>\n" +
+                SET_TEXT_COLOR_BLUE + "quit -" + SET_TEXT_COLOR_WHITE + " Exit the program.\n" +
+                SET_TEXT_COLOR_BLUE + "help -" + SET_TEXT_COLOR_WHITE + " Help with possible commands\n";
     }
+
 
     //Prompts the user to input login information.
     //Calls the server login API to log in the user.
