@@ -1,4 +1,5 @@
 import chess.*;
+import ui.PreLoginRepl;
 
 import java.util.Arrays;
 
@@ -8,7 +9,7 @@ public class Main {
         if (args.length == 1) {
             serverUrl = args[0];
         }
-        System.out.println("♕ Welcome to 240 chess. Type Help to get started. ♕");
-        //new Repl(serverUrl).run();
+
+        new PreLoginRepl(serverUrl).run();
     }
 }

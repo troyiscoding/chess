@@ -6,16 +6,10 @@ import static ui.EscapeSequences.*;
 
 
 public class PreLogin {
+    private final String serverUrl; //
 
-
-    public static void main(String[] args) {
-
-        var preLogin = new PreLogin();
-        System.out.println(preLogin.eval("help"));
-        System.out.println(preLogin.eval("login"));
-        System.out.println(preLogin.eval("login user pass"));
-        System.out.println(preLogin.eval("register"));
-        System.out.println(preLogin.eval("register user pass"));
+    public PreLogin(String serverUrl) {
+        this.serverUrl = serverUrl;
     }
 
     //var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
