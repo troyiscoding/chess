@@ -1,5 +1,7 @@
 package ui;
 
+import handler.ListResponse;
+
 import java.util.Arrays;
 
 import static ui.EscapeSequences.SET_TEXT_COLOR_BLUE;
@@ -8,9 +10,15 @@ import static ui.EscapeSequences.SET_TEXT_COLOR_WHITE;
 public class PostLogin {
     private final String serverUrl;
     public LoginState states;
+    public ServerFacade facade;
+    public String authToken;
 
-    public PostLogin(String serverUrl) {
+
+    public PostLogin(String serverUrl, LoginState state, String token) {
         this.serverUrl = serverUrl;
+        facade = new ServerFacade(serverUrl);
+        states = state;
+        authToken = token;
     }
 
     public String eval(String input) {
@@ -42,10 +50,16 @@ public class PostLogin {
     }
 
     //Logs out the user
-    //Calls the sercer logout API to log out the user.
+    //Calls the server logout API to log out the user.
     //When successfully logged out, the client should transition to the Pre login UI.
-    public String logout() {
+    public String logout() throws RuntimeException {
+        try {
+            facade.logout(authToken);
+        } catch (RuntimeException e) {
+            return e.getMessage();
+        }
         states = LoginState.SIGNED_OUT;
+
         PreLoginRepl preLoginRepl = new PreLoginRepl(serverUrl);
         preLoginRepl.run();
         return "";
@@ -55,7 +69,12 @@ public class PostLogin {
     //Calls the server create API to create the game. -ONLY CREATES GAME
     public String create(String... params) {
         if (params.length >= 1) {
-            return "You have created a game.";
+            try {
+                facade.createGame(authToken, params[0]);
+                return "You have created a game.";
+            } catch (RuntimeException e) {
+                return e.getMessage();
+            }
         }
         return "Expected: <game name>";
     }
@@ -65,7 +84,13 @@ public class PostLogin {
     //Displays the games in a numbered list, including game name and players (not observers).
     //The numbering for the list should be independent of the game ID.
     public String listGames() {
-        return "List of games";
+        try {
+            ListResponse games = facade.listGames(authToken);
+            var result = "listing the games... \n";
+            return result;
+        } catch (RuntimeException e) {
+            return e.getMessage();
+        }
     }
 
     //Allows the user to specify which game they want to join and what color they want to play.
@@ -74,6 +99,7 @@ public class PostLogin {
     //Calls the server join API to join the user to the game.
     public String joinGame(String... params) {
         if (params.length >= 1) {
+            DrawChessBoard.drawChessBoard();
             return "You have joined a game.";
         }
         return "Expected: <game number> [WHITE|BLACK|<EMPTY>]";
@@ -85,6 +111,7 @@ public class PostLogin {
     //Calls the server join API to verify that the game exists.
     public String observeGame(String... params) {
         if (params.length >= 1) {
+            DrawChessBoard.drawChessBoard();
             return "You have joined a game as an observer.";
         }
         return "Expected: <game number>";

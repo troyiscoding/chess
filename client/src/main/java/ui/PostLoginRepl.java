@@ -11,8 +11,8 @@ public class PostLoginRepl {
 
     private final PostLogin client;
 
-    public PostLoginRepl(String serverUrl, LoginState state) {
-        client = new PostLogin(serverUrl);
+    public PostLoginRepl(String serverUrl, LoginState state, String authToken) {
+        client = new PostLogin(serverUrl, state, authToken);
         client.states = state;
     }
 

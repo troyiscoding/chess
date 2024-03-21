@@ -1,5 +1,7 @@
 package ui;
 
+import model.AuthData;
+
 import java.util.Arrays;
 
 import static ui.EscapeSequences.*;
@@ -45,11 +47,11 @@ public class PreLogin {
     public String login(String... params) throws RuntimeException {
         if (params.length >= 2) {
             try {
-                facade.login(params[0], params[1]);
+                AuthData login = facade.login(params[0], params[1]);
                 System.out.println("You have logged in.");
                 state = LoginState.SIGNED_IN;
 
-                PostLoginRepl postLoginRepl = new PostLoginRepl(serverUrl, state);
+                PostLoginRepl postLoginRepl = new PostLoginRepl(serverUrl, state, login.authToken());
                 postLoginRepl.run();
                 return "";
             } catch (RuntimeException e) {
@@ -65,11 +67,11 @@ public class PreLogin {
     public String register(String... params) throws RuntimeException {
         if (params.length >= 2) {
             try {
-                facade.register(params[0], params[1], params[2]);
+                AuthData login = facade.register(params[0], params[1], params[2]);
                 System.out.println("You have registered.");
                 state = LoginState.SIGNED_IN;
 
-                PostLoginRepl postLoginRepl = new PostLoginRepl(serverUrl, state);
+                PostLoginRepl postLoginRepl = new PostLoginRepl(serverUrl, state, login.authToken());
                 postLoginRepl.run();
                 return "";
             } catch (RuntimeException e) {

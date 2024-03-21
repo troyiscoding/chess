@@ -8,10 +8,6 @@ import static ui.EscapeSequences.*;
 public class DrawChessBoard {
     private static final int BOARD_SIZE_IN_SQUARES = 8;
 
-    public static void main(String[] args) {
-        drawChessBoard();
-    }
-
     public static void drawChessBoard() {
         var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
         out.print(ERASE_SCREEN);
