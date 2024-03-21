@@ -21,7 +21,7 @@ public class DrawChessBoard {
         out.println();
         drawHeaders(out);
         drawWhiteTop(out);
-        drawBox(out);
+        drawBoxBottom(out);
         drawBlackBottom(out);
         drawHeaders(out);
     }
@@ -128,7 +128,7 @@ public class DrawChessBoard {
 
     private static void drawWhiteTop(PrintStream out) {
         out.print(RESET_TEXT_BOLD_FAINT);
-        out.print(SET_TEXT_COLOR_WHITE + (1) + " ");
+        out.print(SET_TEXT_COLOR_WHITE + (8) + " ");
         out.print(SET_TEXT_COLOR_BLUE);
         out.print(SET_BG_COLOR_LIGHT_GREY);
         out.print(BLACK_ROOK);
@@ -147,9 +147,9 @@ public class DrawChessBoard {
         out.print(SET_BG_COLOR_DARK_GREY);
         out.print(BLACK_ROOK);
         out.print(INTILIJ_HACK);
-        out.print(SET_TEXT_COLOR_WHITE + " " + (1) + " ");
+        out.print(SET_TEXT_COLOR_WHITE + " " + (8) + " ");
         out.println();
-        out.print(SET_TEXT_COLOR_WHITE + (2) + " ");
+        out.print(SET_TEXT_COLOR_WHITE + (7) + " ");
         out.print(SET_TEXT_COLOR_BLUE);
         out.print(SET_BG_COLOR_DARK_GREY);
         out.print(BLACK_PAWN);
@@ -166,35 +166,35 @@ public class DrawChessBoard {
         out.print(SET_BG_COLOR_DARK_GREY);
         out.print(BLACK_PAWN);
         out.print(SET_BG_COLOR_LIGHT_GREY);
-        out.print(BLACK_PAWN);
-        out.print(INTILIJ_HACK);
-        out.print(SET_TEXT_COLOR_WHITE + " " + (1) + " ");
-        out.println();
-    }
-
-    private static void drawBlackBottom(PrintStream out) {
-        out.print(SET_TEXT_COLOR_WHITE + (7) + " ");
-        out.print(SET_TEXT_COLOR_RED);
-        out.print(SET_BG_COLOR_LIGHT_GREY);
-        out.print(BLACK_PAWN);
-        out.print(SET_BG_COLOR_DARK_GREY);
-        out.print(BLACK_PAWN);
-        out.print(SET_BG_COLOR_LIGHT_GREY);
-        out.print(BLACK_PAWN);
-        out.print(SET_BG_COLOR_DARK_GREY);
-        out.print(BLACK_PAWN);
-        out.print(SET_BG_COLOR_LIGHT_GREY);
-        out.print(BLACK_PAWN);
-        out.print(SET_BG_COLOR_DARK_GREY);
-        out.print(BLACK_PAWN);
-        out.print(SET_BG_COLOR_LIGHT_GREY);
-        out.print(BLACK_PAWN);
-        out.print(SET_BG_COLOR_DARK_GREY);
         out.print(BLACK_PAWN);
         out.print(INTILIJ_HACK);
         out.print(SET_TEXT_COLOR_WHITE + " " + (7) + " ");
         out.println();
-        out.print(SET_TEXT_COLOR_WHITE + (8) + " ");
+    }
+
+    private static void drawBlackBottom(PrintStream out) {
+        out.print(SET_TEXT_COLOR_WHITE + (2) + " ");
+        out.print(SET_TEXT_COLOR_RED);
+        out.print(SET_BG_COLOR_LIGHT_GREY);
+        out.print(BLACK_PAWN);
+        out.print(SET_BG_COLOR_DARK_GREY);
+        out.print(BLACK_PAWN);
+        out.print(SET_BG_COLOR_LIGHT_GREY);
+        out.print(BLACK_PAWN);
+        out.print(SET_BG_COLOR_DARK_GREY);
+        out.print(BLACK_PAWN);
+        out.print(SET_BG_COLOR_LIGHT_GREY);
+        out.print(BLACK_PAWN);
+        out.print(SET_BG_COLOR_DARK_GREY);
+        out.print(BLACK_PAWN);
+        out.print(SET_BG_COLOR_LIGHT_GREY);
+        out.print(BLACK_PAWN);
+        out.print(SET_BG_COLOR_DARK_GREY);
+        out.print(BLACK_PAWN);
+        out.print(INTILIJ_HACK);
+        out.print(SET_TEXT_COLOR_WHITE + " " + (2) + " ");
+        out.println();
+        out.print(SET_TEXT_COLOR_WHITE + (1) + " ");
         out.print(SET_TEXT_COLOR_RED);
         out.print(SET_BG_COLOR_DARK_GREY);
         out.print(BLACK_ROOK);
@@ -213,13 +213,32 @@ public class DrawChessBoard {
         out.print(SET_BG_COLOR_LIGHT_GREY);
         out.print(BLACK_ROOK);
         out.print(INTILIJ_HACK);
-        out.print(SET_TEXT_COLOR_WHITE + " " + (8) + " ");
+        out.print(SET_TEXT_COLOR_WHITE + " " + (1) + " ");
         out.println();
     }
 
     private static void drawBox(PrintStream out) {
         for (int i = 2; i < BOARD_SIZE_IN_SQUARES - 2; i++) {
             out.print(SET_TEXT_COLOR_WHITE + (i + 1) + " ");
+            for (int j = 0; j < BOARD_SIZE_IN_SQUARES; j++) {
+                if ((i + j) % 2 == 0) {
+                    out.print(SET_BG_COLOR_LIGHT_GREY);
+                    out.print("\u2001");
+                } else {
+                    out.print(SET_BG_COLOR_DARK_GREY);
+                    out.print("\u2001");
+                }
+                out.print("  ");
+            }
+            out.print(INTILIJ_HACK);
+            out.print(SET_TEXT_COLOR_WHITE + " " + (i) + " ");
+            out.println();
+        }
+    }
+
+    private static void drawBoxBottom(PrintStream out) {
+        for (int i = BOARD_SIZE_IN_SQUARES - 2; i > 2; i--) {
+            out.print(SET_TEXT_COLOR_WHITE + (i - 1) + " ");
             for (int j = 0; j < BOARD_SIZE_IN_SQUARES; j++) {
                 if ((i + j) % 2 == 0) {
                     out.print(SET_BG_COLOR_LIGHT_GREY);

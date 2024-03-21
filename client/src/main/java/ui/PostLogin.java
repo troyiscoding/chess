@@ -94,7 +94,7 @@ public class PostLogin {
             String result = "";
             for (int i = 0; i < games.games().size(); i++) {
                 ListResponse game = games.games().get(i);
-                result += i + ":  Game Name:" + game.gameName() + " White Username:" + game.whiteUsername() + " Black Username:" + game.blackUsername() + " Game ID:" + game.gameID() + "\n";
+                result += i + ":  Game Name:" + game.gameName() + " White Username:" + game.whiteUsername() + " Black Username:" + game.blackUsername() + "\n"; //consider returning something better than null
             }
             return result;
         } catch (RuntimeException e) {
