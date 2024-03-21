@@ -2,7 +2,10 @@ package ui;
 //import javax.websocket.Endpoint;
 
 import com.google.gson.Gson;
+import handler.JoinRequest;
+import handler.ListResponse;
 import model.AuthData;
+import model.GameData;
 import model.UserData;
 
 import java.io.IOException;
@@ -30,7 +33,6 @@ public class ServerFacade {
         var path = "/session";
         var request = Map.of("username", username, "password", password);
         return this.sendRequest("POST", path, request, null, AuthData.class);
-
     }
 
     public void logout(String AuthToken) {
@@ -43,19 +45,20 @@ public class ServerFacade {
         this.sendRequest("DELETE", path, null, null, null);
     }
 
-    public void createGame(String AuthToken) {
+    public GameData createGame(String AuthToken, String gameName) {
         var path = "/game";
-        this.sendRequest("POST", path, null, AuthToken, null);
+        var request = new GameData(0, null, null, gameName, new chess.ChessGame());
+        return this.sendRequest("POST", path, request, AuthToken, GameData.class);
     }
 
-    public void listGames(String AuthToken) {
+    public ListResponse listGames(String AuthToken) {
         var path = "/game";
-        this.sendRequest("GET", path, null, AuthToken, null);
+        return this.sendRequest("GET", path, null, AuthToken, ListResponse.class);
     }
 
-    public void joinGame(String AuthToken, String gameId) {
-        var path = "/game/" + gameId;
-        this.sendRequest("POST", path, null, AuthToken, null);
+    public void joinGame(String AuthToken, JoinRequest request) {
+        var path = "/game";
+        this.sendRequest("PUT", path, request, AuthToken, null);
     }
 
 
