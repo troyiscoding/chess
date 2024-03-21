@@ -3,7 +3,7 @@ package ui;
 
 import com.google.gson.Gson;
 import handler.JoinRequest;
-import handler.ListResponse;
+import handler.List;
 import model.AuthData;
 import model.GameData;
 import model.UserData;
@@ -51,9 +51,9 @@ public class ServerFacade {
         return this.sendRequest("POST", path, request, AuthToken, GameData.class);
     }
 
-    public ListResponse listGames(String AuthToken) throws RuntimeException {
+    public List listGames(String AuthToken) throws RuntimeException {
         var path = "/game";
-        return this.sendRequest("GET", path, null, AuthToken, ListResponse.class);
+        return this.sendRequest("GET", path, null, AuthToken, List.class);
     }
 
     public void joinGame(String AuthToken, JoinRequest request) throws RuntimeException {

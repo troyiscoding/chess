@@ -1,5 +1,7 @@
 package ui;
 
+import handler.JoinRequest;
+import handler.List;
 import handler.ListResponse;
 
 import java.util.Arrays;
@@ -12,6 +14,8 @@ public class PostLogin {
     public LoginState states;
     public ServerFacade facade;
     public String authToken;
+
+    public List list;
 
 
     public PostLogin(String serverUrl, LoginState state, String token) {
@@ -85,8 +89,13 @@ public class PostLogin {
     //The numbering for the list should be independent of the game ID.
     public String listGames() {
         try {
-            ListResponse games = facade.listGames(authToken);
-            var result = "listing the games... \n";
+            List games = facade.listGames(authToken);
+            list = games;
+            String result = "";
+            for (int i = 0; i < games.games().size(); i++) {
+                ListResponse game = games.games().get(i);
+                result += i + ":  Game Name:" + game.gameName() + " White Username:" + game.whiteUsername() + " Black Username:" + game.blackUsername() + " Game ID:" + game.gameID() + "\n";
+            }
             return result;
         } catch (RuntimeException e) {
             return e.getMessage();
@@ -99,6 +108,13 @@ public class PostLogin {
     //Calls the server join API to join the user to the game.
     public String joinGame(String... params) {
         if (params.length >= 1) {
+            try {
+                ListResponse pickedGame = list.games().get(Integer.parseInt(params[0]));
+                String color = params[1];
+                facade.joinGame(authToken, new JoinRequest(color, pickedGame.gameID()));
+            } catch (RuntimeException e) {
+                return e.getMessage();
+            }
             DrawChessBoard.drawChessBoard();
             return "You have joined a game.";
         }
@@ -111,6 +127,12 @@ public class PostLogin {
     //Calls the server join API to verify that the game exists.
     public String observeGame(String... params) {
         if (params.length >= 1) {
+            try {
+                ListResponse pickedGame = list.games().get(Integer.parseInt(params[0]));
+                facade.joinGame(authToken, new JoinRequest("", pickedGame.gameID()));
+            } catch (RuntimeException e) {
+                return e.getMessage();
+            }
             DrawChessBoard.drawChessBoard();
             return "You have joined a game as an observer.";
         }
