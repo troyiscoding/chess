@@ -1,5 +1,5 @@
 import ui.PreLoginRepl;
-import server.Server;
+//import server.Server;
 
 public class Main {
     public static void main(String[] args) {
@@ -7,8 +7,8 @@ public class Main {
         if (args.length == 1) {
             serverUrl = args[0];
         }
-        new Server().run(8080);
-        
+        //new Server().run(8080);
+
         System.out.println("♕ Welcome to 240 chess. Type Help to get started. ♕");
         new PreLoginRepl(serverUrl).run();
     }
