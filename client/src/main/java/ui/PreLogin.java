@@ -8,10 +8,12 @@ import static ui.EscapeSequences.*;
 public class PreLogin {
     private final String serverUrl;
     public LoginState state = LoginState.SIGNED_OUT;
+    public ServerFacade facade;
 
 
     public PreLogin(String serverUrl) {
         this.serverUrl = serverUrl;
+        facade = new ServerFacade(serverUrl);
     }
 
 
@@ -40,14 +42,19 @@ public class PreLogin {
     //Prompts the user to input login information.
     //Calls the server login API to log in the user.
     //When successfully logged in, the client should transition to the Post login UI.
-    public String login(String... params) {
+    public String login(String... params) throws RuntimeException {
         if (params.length >= 2) {
-            System.out.println("You have logged in.");
-            state = LoginState.SIGNED_IN;
+            try {
+                facade.login(params[0], params[1]);
+                System.out.println("You have logged in.");
+                state = LoginState.SIGNED_IN;
 
-            PostLoginRepl postLoginRepl = new PostLoginRepl(serverUrl, state);
-            postLoginRepl.run();
-            return "";
+                PostLoginRepl postLoginRepl = new PostLoginRepl(serverUrl, state);
+                postLoginRepl.run();
+                return "";
+            } catch (RuntimeException e) {
+                return e.getMessage();
+            }
         }
         return "Expected: <username> <password>";
     }
@@ -55,10 +62,19 @@ public class PreLogin {
     //Prompts the user to input registration information.
     //Calls the server register API to register and login the user.
     //When successfully registered and logged in, the client should be logged in and transition to the Post login UI.
-    public String register(String... params) {
+    public String register(String... params) throws RuntimeException {
         if (params.length >= 2) {
-            state = LoginState.SIGNED_IN;
-            return "You have registered.";
+            try {
+                facade.register(params[0], params[1], params[2]);
+                System.out.println("You have registered.");
+                state = LoginState.SIGNED_IN;
+
+                PostLoginRepl postLoginRepl = new PostLoginRepl(serverUrl, state);
+                postLoginRepl.run();
+                return "";
+            } catch (RuntimeException e) {
+                return e.getMessage();
+            }
         }
         return "Expected: <username> <password>";
     }

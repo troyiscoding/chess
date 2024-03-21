@@ -23,46 +23,46 @@ public class ServerFacade {
         serverUrl = url;
     }
 
-    public AuthData register(String username, String password, String email) {
+    public AuthData register(String username, String password, String email) throws RuntimeException {
         var path = "/user";
         var request = new UserData(username, password, email);
         return this.sendRequest("POST", path, request, null, AuthData.class);
     }
 
-    public AuthData login(String username, String password) {
+    public AuthData login(String username, String password) throws RuntimeException {
         var path = "/session";
         var request = Map.of("username", username, "password", password);
         return this.sendRequest("POST", path, request, null, AuthData.class);
     }
 
-    public void logout(String AuthToken) {
+    public void logout(String AuthToken) throws RuntimeException {
         var path = "/session";
         this.sendRequest("DELETE", path, null, AuthToken, null);
     }
 
-    public void clearData() {
+    public void clearData() throws RuntimeException {
         var path = "/db";
         this.sendRequest("DELETE", path, null, null, null);
     }
 
-    public GameData createGame(String AuthToken, String gameName) {
+    public GameData createGame(String AuthToken, String gameName) throws RuntimeException {
         var path = "/game";
         var request = new GameData(0, null, null, gameName, new chess.ChessGame());
         return this.sendRequest("POST", path, request, AuthToken, GameData.class);
     }
 
-    public ListResponse listGames(String AuthToken) {
+    public ListResponse listGames(String AuthToken) throws RuntimeException {
         var path = "/game";
         return this.sendRequest("GET", path, null, AuthToken, ListResponse.class);
     }
 
-    public void joinGame(String AuthToken, JoinRequest request) {
+    public void joinGame(String AuthToken, JoinRequest request) throws RuntimeException {
         var path = "/game";
         this.sendRequest("PUT", path, request, AuthToken, null);
     }
 
 
-    private <T> T sendRequest(String method, String path, Object req, String header, Class<T> format) {
+    private <T> T sendRequest(String method, String path, Object req, String header, Class<T> format) throws RuntimeException {
         try {
             URI url = new URI(serverUrl + path);
             HttpURLConnection http = (HttpURLConnection) url.toURL().openConnection();

@@ -25,6 +25,7 @@ public class ServerFacadeTests {
 
     @AfterAll
     static void stopServer() {
+        facade.clearData();
         server.stop();
     }
 
@@ -32,6 +33,7 @@ public class ServerFacadeTests {
     void clear() {
         facade.clearData();
     }
+
 
     @Test
     public void registerTestSuccess() {
