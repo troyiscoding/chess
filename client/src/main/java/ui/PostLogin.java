@@ -24,6 +24,7 @@ public class PostLogin {
             case "list" -> listGames(); //Lists all the games that currently exist on the server.
             case "join" ->
                     joinGame(params); //Prompts the user to specify which game they want to join and what color they want to play.
+            case "observe" -> observeGame(params); //Prompts the user to specify which game they want to observe.
             default -> help();
         };
     }

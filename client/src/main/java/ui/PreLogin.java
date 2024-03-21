@@ -9,9 +9,11 @@ public class PreLogin {
     private final String serverUrl;
     public LoginState state = LoginState.SIGNED_OUT;
 
+
     public PreLogin(String serverUrl) {
         this.serverUrl = serverUrl;
     }
+
 
     public String eval(String input) {
         var tokens = input.toLowerCase().split(" ");
@@ -35,7 +37,6 @@ public class PreLogin {
                 SET_TEXT_COLOR_BLUE + "help -" + SET_TEXT_COLOR_WHITE + " Help with possible commands\n";
     }
 
-
     //Prompts the user to input login information.
     //Calls the server login API to log in the user.
     //When successfully logged in, the client should transition to the Post login UI.
@@ -43,6 +44,7 @@ public class PreLogin {
         if (params.length >= 2) {
             System.out.println("You have logged in.");
             state = LoginState.SIGNED_IN;
+
             PostLoginRepl postLoginRepl = new PostLoginRepl(serverUrl, state);
             postLoginRepl.run();
             return "";
