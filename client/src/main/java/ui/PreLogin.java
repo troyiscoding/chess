@@ -6,17 +6,13 @@ import static ui.EscapeSequences.*;
 
 
 public class PreLogin {
-    private final String serverUrl; //
+    private final String serverUrl;
+    public LoginState state = LoginState.SIGNED_OUT;
 
     public PreLogin(String serverUrl) {
         this.serverUrl = serverUrl;
     }
 
-    //var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
-//
-//        out.print(ERASE_SCREEN);
-//
-//        out.print(SET_TEXT_COLOR_WHITE);
     public String eval(String input) {
         var tokens = input.toLowerCase().split(" ");
         var cmd = (tokens.length > 0) ? tokens[0] : "help";
@@ -45,7 +41,11 @@ public class PreLogin {
     //When successfully logged in, the client should transition to the Post login UI.
     public String login(String... params) {
         if (params.length >= 2) {
-            return "You have logged in.";
+            System.out.println("You have logged in.");
+            state = LoginState.SIGNED_IN;
+            PostLoginRepl postLoginRepl = new PostLoginRepl(serverUrl, state);
+            postLoginRepl.run();
+            return "";
         }
         return "Expected: <username> <password>";
     }
@@ -55,6 +55,7 @@ public class PreLogin {
     //When successfully registered and logged in, the client should be logged in and transition to the Post login UI.
     public String register(String... params) {
         if (params.length >= 2) {
+            state = LoginState.SIGNED_IN;
             return "You have registered.";
         }
         return "Expected: <username> <password>";

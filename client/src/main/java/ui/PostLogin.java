@@ -6,10 +6,11 @@ import static ui.EscapeSequences.SET_TEXT_COLOR_BLUE;
 import static ui.EscapeSequences.SET_TEXT_COLOR_WHITE;
 
 public class PostLogin {
-    public static void main(String[] args) {
-        var postLogin = new PostLogin();
-        System.out.println(postLogin.eval("help"));
+    private final String serverUrl;
+    public LoginState states;
 
+    public PostLogin(String serverUrl) {
+        this.serverUrl = serverUrl;
     }
 
     public String eval(String input) {

@@ -1,10 +1,8 @@
-import chess.*;
 import ui.PreLoginRepl;
-
-import java.util.Arrays;
 
 public class Main {
     public static void main(String[] args) {
+        System.out.println("♕ Welcome to 240 chess. Type Help to get started. ♕");
         var serverUrl = "http://localhost:8080";
         if (args.length == 1) {
             serverUrl = args[0];

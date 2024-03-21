@@ -16,18 +16,17 @@ public class PreLoginRepl {
     }
 
     public void run() {
-        System.out.println("♕ Welcome to 240 chess. Type Help to get started. ♕");
-        System.out.print(client.helpLogin());
+        //System.out.print(client.helpLogin());
 
         Scanner scanner = new Scanner(System.in);
         var result = "";
-        while (!result.equals("quit")) {
-
+        while (!result.equals("quit") && client.state == LoginState.SIGNED_OUT) {
+            System.out.print("[" + LoginState.SIGNED_OUT + "]" + " >>> ");
             result = scanner.nextLine(); //READ
-            client.eval(result); //EVAL
-            System.out.print(result);
-            
+            String Print = client.eval(result); //EVAL
+            System.out.print(Print); //PRINT
             System.out.println();
         }
+        scanner.close();
     }
 }
