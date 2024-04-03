@@ -35,7 +35,7 @@ public class GamePlay {
             case "leave" -> leave();
             case "make move" -> move(params);
             case "resign" -> resign();
-            //case "highlight legal moves" -> highlight();
+            case "highlight legal moves" -> highlight();
             default -> helpGame();
         };
     }
@@ -82,7 +82,7 @@ public class GamePlay {
         return "Expected: <Piece Moving> <Position Moving to> EX: A2 A3";
     }
 
-    //Resign - Propts the user to confirm they want to resign.
+    //Resign - Prompts the user to confirm they want to resign.
     //If the user confirms, they forfeit the game and the game is over.
     //Does not cause the user to leave the game.
     public String resign() {
@@ -101,6 +101,14 @@ public class GamePlay {
         } else {
             return "You have chosen not to forfeit the game.";
         }
+    }
+
+    //Highlight Legal Moves - Allows the user to input what piece for which they want to highlight legal moves
+    //The selected pieces current square and all squares it can legally move to are highlighted.
+    //This is a local operation and has no effect on remote users screens.
+    public String highlight() {
+        drawChessBoard();
+        return "";
     }
 
 }
