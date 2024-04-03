@@ -112,11 +112,12 @@ public class PostLogin {
                 ListResponse pickedGame = list.games().get(Integer.parseInt(params[0]));
                 String color = params[1];
                 facade.joinGame(authToken, new JoinRequest(color, pickedGame.gameID()));
+                System.out.println("You have joined a game.");
+                GamePlayRepl gameInstance = new GamePlayRepl(serverUrl, authToken);
+                return gameInstance.run();
             } catch (RuntimeException e) {
                 return e.getMessage();
             }
-            DrawChessBoard.drawChessBoard();
-            return "You have joined a game.";
         }
         return "Expected: <game number> [WHITE|BLACK|<EMPTY>]";
     }
