@@ -1,9 +1,12 @@
 package ui;
 
+import chess.ChessGame;
 import handler.JoinRequest;
 import handler.List;
 import handler.ListResponse;
 import webSocket.WebSocketFacade;
+import webSocketMessages.userCommands.JOIN_PLAYER;
+
 
 import java.util.Arrays;
 
@@ -118,14 +121,15 @@ public class PostLogin {
             try {
                 ListResponse pickedGame = list.games().get(Integer.parseInt(params[0]));
                 String color = params[1];
-                facade.joinGame(authToken, new JoinRequest(color, pickedGame.gameID()));
+                //facade.joinGame(authToken, new JoinRequest(color, pickedGame.gameID()));
+                websocket.joinPlayer(new JOIN_PLAYER(authToken, pickedGame.gameID(), ChessGame.TeamColor.valueOf(color)));
                 System.out.println("You have joined a game.");
-                //UserGameCommand.CommandType.JOIN_PLAYER joinPlayerVar = new JOIN_PLAYERMM(pickedGame.gameID(), ChessGame.TeamColor.valueOf(color));
-                //websocket.joinPlayer(joinPlayerVar);
                 GamePlayRepl gameInstance = new GamePlayRepl(serverUrl, authToken);
                 return gameInstance.run();
             } catch (RuntimeException e) {
                 return e.getMessage();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
             }
         }
         return "Expected: <game number> [WHITE|BLACK|<EMPTY>]";
