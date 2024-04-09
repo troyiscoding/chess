@@ -1,17 +1,17 @@
 package webSocket;
 
-import com.sun.nio.sctp.NotificationHandler;
-import org.glassfish.tyrus.core.wsadl.model.Endpoint;
+import com.google.gson.Gson;
+import service.ResponseException;
+import webSocketMessages.userCommands.UserGameCommand;
 
 
 import javax.websocket.*;
+import java.io.IOException;
 import java.net.URI;
 
 
 public class WebSocketFacade extends Endpoint {
     public javax.websocket.Session session;
-
-    NotificationHandler notificationHandler;
 
     public WebSocketFacade() throws Exception {
         URI uri = new URI("ws://localhost:8080/connect");
@@ -30,6 +30,14 @@ public class WebSocketFacade extends Endpoint {
     }
 
     public void onOpen(Session session, EndpointConfig endpointConfig) {
+    }
+
+    public void joinPlayer(UserGameCommand.CommandType JOIN_PLAYER) throws Exception {
+        try {
+            this.session.getBasicRemote().sendText(new Gson().toJson(JOIN_PLAYER));
+        } catch (IOException ex) {
+            throw new ResponseException(500, ex.getMessage());
+        }
     }
 
 }

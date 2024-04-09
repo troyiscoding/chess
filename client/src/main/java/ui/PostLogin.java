@@ -3,6 +3,7 @@ package ui;
 import handler.JoinRequest;
 import handler.List;
 import handler.ListResponse;
+import webSocket.WebSocketFacade;
 
 import java.util.Arrays;
 
@@ -17,12 +18,18 @@ public class PostLogin {
 
     public List list;
 
+    public WebSocketFacade websocket;
 
     public PostLogin(String serverUrl, LoginState state, String token) {
         this.serverUrl = serverUrl;
         facade = new ServerFacade(serverUrl);
         states = state;
         authToken = token;
+        try {
+            websocket = new WebSocketFacade();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public String eval(String input) {
@@ -113,6 +120,8 @@ public class PostLogin {
                 String color = params[1];
                 facade.joinGame(authToken, new JoinRequest(color, pickedGame.gameID()));
                 System.out.println("You have joined a game.");
+                //UserGameCommand.CommandType.JOIN_PLAYER joinPlayerVar = new JOIN_PLAYERMM(pickedGame.gameID(), ChessGame.TeamColor.valueOf(color));
+                //websocket.joinPlayer(joinPlayerVar);
                 GamePlayRepl gameInstance = new GamePlayRepl(serverUrl, authToken);
                 return gameInstance.run();
             } catch (RuntimeException e) {
