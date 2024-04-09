@@ -2,6 +2,7 @@ package webSocket;
 
 import com.google.gson.Gson;
 import service.ResponseException;
+import webSocketMessages.userCommands.JOIN_OBSERVER;
 import webSocketMessages.userCommands.JOIN_PLAYER;
 import webSocketMessages.userCommands.UserGameCommand;
 
@@ -41,4 +42,11 @@ public class WebSocketFacade extends Endpoint {
         }
     }
 
+    public void observePlayer(JOIN_OBSERVER join) throws Exception {
+        try {
+            this.session.getBasicRemote().sendText(new Gson().toJson(join));
+        } catch (IOException ex) {
+            throw new ResponseException(500, ex.getMessage());
+        }
+    }
 }

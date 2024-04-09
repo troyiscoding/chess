@@ -5,6 +5,7 @@ import handler.JoinRequest;
 import handler.List;
 import handler.ListResponse;
 import webSocket.WebSocketFacade;
+import webSocketMessages.userCommands.JOIN_OBSERVER;
 import webSocketMessages.userCommands.JOIN_PLAYER;
 
 
@@ -121,8 +122,8 @@ public class PostLogin {
             try {
                 ListResponse pickedGame = list.games().get(Integer.parseInt(params[0]));
                 String color = params[1];
-                //facade.joinGame(authToken, new JoinRequest(color, pickedGame.gameID()));
-                websocket.joinPlayer(new JOIN_PLAYER(authToken, pickedGame.gameID(), ChessGame.TeamColor.valueOf(color)));
+                facade.joinGame(authToken, new JoinRequest(color, pickedGame.gameID()));
+                //websocket.joinPlayer(new JOIN_PLAYER(authToken, pickedGame.gameID(), ChessGame.TeamColor.valueOf(color)));
                 System.out.println("You have joined a game.");
                 GamePlayRepl gameInstance = new GamePlayRepl(serverUrl, authToken);
                 return gameInstance.run();
@@ -143,9 +144,12 @@ public class PostLogin {
         if (params.length >= 1) {
             try {
                 ListResponse pickedGame = list.games().get(Integer.parseInt(params[0]));
-                facade.joinGame(authToken, new JoinRequest("", pickedGame.gameID()));
+                websocket.observePlayer(new JOIN_OBSERVER(authToken, pickedGame.gameID()));
+                //facade.joinGame(authToken, new JoinRequest("", pickedGame.gameID()));
             } catch (RuntimeException e) {
                 return e.getMessage();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
             }
             DrawChessBoard.drawChessBoard();
             return "You have joined a game as an observer.";

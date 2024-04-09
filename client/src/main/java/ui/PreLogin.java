@@ -50,7 +50,6 @@ public class PreLogin {
                 AuthData login = facade.login(params[0], params[1]);
                 System.out.println("You have logged in.");
                 state = LoginState.SIGNED_IN;
-
                 PostLoginRepl postLoginRepl = new PostLoginRepl(serverUrl, state, login.authToken());
                 postLoginRepl.run();
                 return "";

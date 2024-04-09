@@ -11,20 +11,26 @@ import service.UserService;
 import spark.Request;
 import spark.Response;
 import spark.Spark;
+import webSocket.WebSockets;
 
 import java.util.Map;
 
 public class Server {
     private final UserService userService;
     private final GameService gameService;
+    private final WebSockets webSocket;
 
     public Server() {
         this.userService = new UserService();
         this.gameService = new GameService();
+        this.webSocket = new WebSockets();
     }
 
     public int run(int desiredPort) {
         Spark.port(desiredPort);
+
+        // Register web socket
+        Spark.webSocket("/connect", webSocket);
 
         Spark.staticFiles.location("web");
         //Needed this to get the web page to load
