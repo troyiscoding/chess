@@ -11,8 +11,8 @@ public class GamePlayRepl {
 
     private final GamePlay game;
 
-    public GamePlayRepl(String serverURL, String token, int gameID) {
-        game = new GamePlay(serverURL, token, gameID);
+    public GamePlayRepl(String serverURL, String token, int gameID, boolean observer) {
+        game = new GamePlay(serverURL, token, gameID, observer);
     }
 
     public String run() {

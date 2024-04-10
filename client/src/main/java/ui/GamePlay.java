@@ -1,5 +1,6 @@
 package ui;
 
+import chess.ChessBoard;
 import chess.ChessGame;
 import handler.JoinRequest;
 import handler.ListResponse;
@@ -22,14 +23,17 @@ public class GamePlay {
     public WebSocketFacade websocket;
     public int gameID;
 
+    public boolean lockout;
+
     public boolean forfeit;
 
-    public GamePlay(String serverUrl, String token, int gameID) {
+    public GamePlay(String serverUrl, String token, int gameID, boolean observer) {
         this.serverUrl = serverUrl;
         facade = new ServerFacade(serverUrl);
         authToken = token;
         forfeit = false;
         this.gameID = gameID;
+        lockout = observer;
         try {
             websocket = new WebSocketFacade(serverUrl);
         } catch (Exception e) {
@@ -89,9 +93,16 @@ public class GamePlay {
     //The board is updated to reflect the result of the move.
     //The board automatically updates on all clients in the game.
     public String move(String... params) {
+        if (lockout) {
+            return "You are an observer and cannot resign.";
+        }
+        if (forfeit) {
+            return "No moves after game completion due to resignation, checkmate, or stalemate.";
+        }
+
         if (params.length >= 1) {
             try {
-                
+
                 return "print board here";
             } catch (RuntimeException e) {
                 return e.getMessage();
@@ -104,6 +115,9 @@ public class GamePlay {
     //If the user confirms, they forfeit the game and the game is over.
     //Does not cause the user to leave the game.
     public String resign() {
+        if (lockout) {
+            return "You are an observer and cannot resign.";
+        }
         var result = "";
         Scanner scanner = new Scanner(System.in);
         System.out.println("ARE YOU SURE YOU WANT TO FORFEIT? Enter (Y/N).");
@@ -126,6 +140,10 @@ public class GamePlay {
     //The selected pieces current square and all squares it can legally move to are highlighted.
     //This is a local operation and has no effect on remote users screens.
     public String highlight() {
+        if (lockout) {
+            return "You are an observer and cannot resign.";
+        }
+        ChessBoard board = WebSocketFacade.chessBoard;
         drawChessBoard();
         return "";
     }

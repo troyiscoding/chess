@@ -131,7 +131,7 @@ public class PostLogin {
                     return "Expected: <game number> [WHITE|BLACK|<EMPTY>]";
                 //websocket.joinPlayer(new JOIN_PLAYER(authToken, pickedGame.gameID(), ChessGame.TeamColor.valueOf(color)));
                 System.out.println("You have joined a game.");
-                GamePlayRepl gameInstance = new GamePlayRepl(serverUrl, authToken, pickedGame.gameID());
+                GamePlayRepl gameInstance = new GamePlayRepl(serverUrl, authToken, pickedGame.gameID(), false);
                 return gameInstance.run();
             } catch (RuntimeException e) {
                 return e.getMessage();
@@ -148,8 +148,8 @@ public class PostLogin {
     //Calls the server join API to verify that the game exists.
     public String observeGame(String... params) {
         if (params.length >= 1) {
+            ListResponse pickedGame = list.games().get(Integer.parseInt(params[0]));
             try {
-                ListResponse pickedGame = list.games().get(Integer.parseInt(params[0]));
                 websocket.observePlayer(new JOIN_OBSERVER(authToken, pickedGame.gameID()));
                 //facade.joinGame(authToken, new JoinRequest("", pickedGame.gameID()));
             } catch (RuntimeException e) {
@@ -158,7 +158,8 @@ public class PostLogin {
                 throw new RuntimeException(e);
             }
             //DrawChessBoard.drawChessBoard();
-            return "You have joined a game as an observer.";
+            GamePlayRepl gameInstance = new GamePlayRepl(serverUrl, authToken, pickedGame.gameID(), true);
+            return gameInstance.run();
         }
         return "Expected: <game number>";
     }
