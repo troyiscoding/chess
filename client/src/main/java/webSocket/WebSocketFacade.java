@@ -8,10 +8,7 @@ import ui.DrawBoardNew;
 import webSocketMessages.serverMessages.LOAD_GAME;
 import webSocketMessages.serverMessages.NOTIFICATION;
 import webSocketMessages.serverMessages.ServerMessage;
-import webSocketMessages.userCommands.JOIN_OBSERVER;
-import webSocketMessages.userCommands.JOIN_PLAYER;
-import webSocketMessages.userCommands.LEAVE;
-import webSocketMessages.userCommands.UserGameCommand;
+import webSocketMessages.userCommands.*;
 
 
 import javax.websocket.*;
@@ -89,6 +86,14 @@ public class WebSocketFacade extends Endpoint {
     public void leaveGame(LEAVE leave) throws Exception {
         try {
             this.session.getBasicRemote().sendText(new Gson().toJson(leave));
+        } catch (IOException ex) {
+            throw new ResponseException(500, ex.getMessage());
+        }
+    }
+
+    public void resignGame(RESIGN resign) throws Exception {
+        try {
+            this.session.getBasicRemote().sendText(new Gson().toJson(resign));
         } catch (IOException ex) {
             throw new ResponseException(500, ex.getMessage());
         }

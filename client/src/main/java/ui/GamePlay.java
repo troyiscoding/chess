@@ -5,6 +5,7 @@ import handler.JoinRequest;
 import handler.ListResponse;
 import webSocket.WebSocketFacade;
 import webSocketMessages.userCommands.LEAVE;
+import webSocketMessages.userCommands.RESIGN;
 
 import java.util.Arrays;
 import java.util.Scanner;
@@ -55,9 +56,9 @@ public class GamePlay {
     public String helpGame() {
         return "Available commands:\n" +
                 SET_TEXT_COLOR_BLUE + "Help -" + SET_TEXT_COLOR_WHITE + " Help with possible commands\n" +
-                SET_TEXT_COLOR_BLUE + "Redraw -" + SET_TEXT_COLOR_WHITE + " Redraws te chess board.\n" +
+                SET_TEXT_COLOR_BLUE + "Redraw -" + SET_TEXT_COLOR_WHITE + " Redraws the chess board.\n" +
                 SET_TEXT_COLOR_BLUE + "Leave -" + SET_TEXT_COLOR_WHITE + " Removes you from the game.\n" +
-                SET_TEXT_COLOR_BLUE + "move -" + SET_TEXT_COLOR_WHITE + "Make Move <Piece Chosen> <Desired Position>\n" +
+                SET_TEXT_COLOR_BLUE + "Move -" + SET_TEXT_COLOR_WHITE + "Make Move <Piece Chosen> <Desired Position>\n" +
                 SET_TEXT_COLOR_BLUE + "Resign -" + SET_TEXT_COLOR_WHITE + " Forfeit and end the game.\n" +
                 SET_TEXT_COLOR_BLUE + "Highlight -" + SET_TEXT_COLOR_WHITE + "Highlights Legal Moves <Piece To highlight>\n";
     }
@@ -90,7 +91,7 @@ public class GamePlay {
     public String move(String... params) {
         if (params.length >= 1) {
             try {
-
+                
                 return "print board here";
             } catch (RuntimeException e) {
                 return e.getMessage();
@@ -110,10 +111,10 @@ public class GamePlay {
         if (result.equals("Y") || result.equals("y")) {
             try {
                 //ServerFacade.resign(authToken);
-
+                websocket.resignGame(new RESIGN(authToken, gameID));
                 forfeit = true;
                 return "You have forfeited the game.";
-            } catch (RuntimeException e) {
+            } catch (Exception e) {
                 return e.getMessage();
             }
         } else {
