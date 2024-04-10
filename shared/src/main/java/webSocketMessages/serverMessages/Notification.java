@@ -2,10 +2,10 @@ package webSocketMessages.serverMessages;
 
 import java.util.Objects;
 
-public class NOTIFICATION extends ServerMessage {
-    public final String message;
+public class Notification extends ServerMessage {
+    public String message;
 
-    public NOTIFICATION(String message) {
+    public Notification(String message) {
         super(ServerMessageType.NOTIFICATION);
         this.message = message;
     }
@@ -20,7 +20,7 @@ public class NOTIFICATION extends ServerMessage {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
 
-        NOTIFICATION that = (NOTIFICATION) o;
+        Notification that = (Notification) o;
         return Objects.equals(message, that.message);
     }
 

@@ -1,15 +1,17 @@
 package webSocketMessages.serverMessages;
 
-import model.GameData;
-
 import java.util.Objects;
 
-public class LOAD_GAME extends ServerMessage {
-    public final chess.ChessGame game;
+public class LoadGame extends ServerMessage {
+    public chess.ChessGame game;
 
-    public LOAD_GAME(chess.ChessGame game) {
+    public LoadGame(chess.ChessGame game) {
         super(ServerMessageType.LOAD_GAME);
+        //if (game == null) {
+        //  this.game = new chess.ChessGame();
+        //} else {
         this.game = game;
+        //}
     }
 
     public chess.ChessGame getGameData() {
@@ -22,7 +24,7 @@ public class LOAD_GAME extends ServerMessage {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
 
-        LOAD_GAME loadGame = (LOAD_GAME) o;
+        LoadGame loadGame = (LoadGame) o;
         return Objects.equals(game, loadGame.game);
     }
 

@@ -1,9 +1,9 @@
 package webSocket;
 
 import chess.ChessGame;
+import chess.InvalidMoveException;
 import com.google.gson.Gson;
 import dataAccess.*;
-import handler.JoinRequest;
 import model.AuthData;
 import model.GameData;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
@@ -33,7 +33,7 @@ public class WebSockets {
             case JOIN_OBSERVER -> JoinObserver(message, session);
             case JOIN_PLAYER -> JoinPlayer(message, session);
             case LEAVE -> leaveGame(message, session);
-            //case MAKE_MOVE -> connections.makeMove(action.visitorName(), action.getMove());
+            case MAKE_MOVE -> makeMove(message, session);
             case RESIGN -> resignGame(message, session);
         }
     }
@@ -47,12 +47,20 @@ public class WebSockets {
         try {
             AuthData user = authDAO.getAuth(auth);
             GameData returnGame = gameDAO.findGame(gameID);
-
-            System.out.println(returnGame.game());
-            connections.add(user.authToken(), session, gameID);
-            connections.broadcast(user.authToken(), new NOTIFICATION(user.username() + " is observing the game!"), gameID);
-            connections.respond(user.authToken(), gameID, returnGame);
-        } catch (DataAccessException | IOException e) {
+            System.out.println(new Gson().toJson(returnGame));
+            if (returnGame == null) {
+                connections.error(session, "Error failed to resign game!");
+            } else {
+                if (UserService.validateAuthTokenBoolean(auth)) {
+                    System.out.println(returnGame.game());
+                    connections.add(user.authToken(), session, gameID);
+                    connections.broadcast(user.authToken(), new Notification(user.username() + " is observing the game!"), gameID);
+                    connections.respond(user.authToken(), gameID, returnGame);
+                } else {
+                    connections.error(session, "Error failed to resign game! Invalid Auth");
+                }
+            }
+        } catch (DataAccessException | ResponseException | IOException e) {
             connections.error(session, "Error failed to join game!");
         }
     }
@@ -66,17 +74,18 @@ public class WebSockets {
         var playerColor = Join.playerColor;
         try {
             GameData returnGame = gameDAO.findGame(gameID);
-            //System.out.println(returnGame.game());
-
             AuthData user = authDAO.getAuth(auth);
-            if (UserService.validateAuthTokenBoolean(auth)) {
+            //System.out.println(returnGame.game());
+            if (returnGame == null || returnGame.game() == null) {
+                connections.error(session, "Error wrong gameID or have no game!");
+            } else if (UserService.validateAuthTokenBoolean(auth)) {
                 GameData game = gameDAO.findGame(gameID);
                 String username = UserService.validateAuthTokenString(auth);
                 if (playerColor == ChessGame.TeamColor.BLACK) {
                     if (game.blackUsername() == null) {
                         gameDAO.updateGame(new GameData(gameID, game.whiteUsername(), username, game.gameName(), game.game()));
                         connections.add(user.authToken(), session, gameID);
-                        connections.broadcast(user.authToken(), new NOTIFICATION(user.username() + " is joining the game!"), gameID);
+                        connections.broadcast(user.authToken(), new Notification(user.username() + " is joining the game!"), gameID);
                         connections.respond(user.authToken(), gameID, returnGame);
                     } else {
                         connections.error(session, "Error: already taken");
@@ -85,7 +94,7 @@ public class WebSockets {
                     if (game.whiteUsername() == null) {
                         gameDAO.updateGame(new GameData(gameID, username, game.blackUsername(), game.gameName(), game.game()));
                         connections.add(user.authToken(), session, gameID);
-                        connections.broadcast(user.authToken(), new NOTIFICATION(user.username() + " is joining the game!"), gameID);
+                        connections.broadcast(user.authToken(), new Notification(user.username() + " is joining the game!"), gameID);
                         connections.respond(user.authToken(), gameID, returnGame);
                     } else {
                         connections.error(session, "Error: already taken");
@@ -114,7 +123,7 @@ public class WebSockets {
             AuthData user = authDAO.getAuth(auth);
             GameData returnGame = gameDAO.findGame(gameID);
             connections.remove(user.authToken());
-            connections.broadcast(user.authToken(), new NOTIFICATION(user.username() + " has left the game!"), gameID);
+            connections.broadcast(user.authToken(), new Notification(user.username() + " has left the game!"), gameID);
             connections.respond(user.authToken(), gameID, returnGame);
         } catch (DataAccessException | IOException e) {
             connections.error(session, "Error failed to leave game!");
@@ -130,11 +139,35 @@ public class WebSockets {
         try {
             AuthData user = authDAO.getAuth(auth);
             GameData returnGame = gameDAO.findGame(gameID);
+            if (returnGame == null) {
+                connections.error(session, "Error failed to resign game!");
+            }
             connections.remove(user.authToken());
-            connections.broadcast(user.authToken(), new NOTIFICATION(user.username() + " has resigned the game!"), gameID);
+            connections.broadcast(user.authToken(), new Notification(user.username() + " has resigned the game!"), gameID);
             connections.respond(user.authToken(), gameID, returnGame);
         } catch (DataAccessException | IOException e) {
             connections.error(session, "Error failed to resign game!");
+        }
+    }
+
+    private void makeMove(String Json, Session session) throws IOException {
+        var Move = new Gson().fromJson(Json, MAKE_MOVE.class);
+        int gameID = Move.gameID;
+        //Print GameID
+        //System.out.println(gameID);
+        var auth = Move.getAuthString();
+        var move = Move.move;
+        try {
+            AuthData user = authDAO.getAuth(auth);
+            GameData returnGame = gameDAO.findGame(gameID);
+            if (returnGame == null || returnGame.game() == null) {
+                connections.error(session, "Error failed to make move!");
+            } else {
+                returnGame.game().makeMove(move);
+                connections.MakeMove(user.authToken(), gameID, returnGame.game());
+            }
+        } catch (DataAccessException | InvalidMoveException | IOException e) {
+            connections.error(session, "Error failed to make move!");
         }
     }
 }

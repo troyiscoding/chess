@@ -5,8 +5,8 @@ import chess.ChessGame;
 import com.google.gson.Gson;
 import service.ResponseException;
 import ui.DrawBoardNew;
-import webSocketMessages.serverMessages.LOAD_GAME;
-import webSocketMessages.serverMessages.NOTIFICATION;
+import webSocketMessages.serverMessages.LoadGame;
+import webSocketMessages.serverMessages.Notification;
 import webSocketMessages.serverMessages.ServerMessage;
 import webSocketMessages.userCommands.*;
 
@@ -38,21 +38,21 @@ public class WebSocketFacade extends Endpoint {
 
     private void notification(String message) {
         System.out.println("Notification received");
-        var notification = new Gson().fromJson(message, NOTIFICATION.class);
+        var notification = new Gson().fromJson(message, Notification.class);
         System.out.println(notification.getMessage());
         System.out.println("[IN_GAME] >>>");
     }
 
     private void loadGame(String message) {
         System.out.println("Game loaded");
-        var loadGame = new Gson().fromJson(message, LOAD_GAME.class);
+        var loadGame = new Gson().fromJson(message, LoadGame.class);
         DrawBoardNew.drawBoardNew(loadGame.game.getBoard(), ChessGame.TeamColor.WHITE);
         chessBoard = loadGame.game.getBoard();
         System.out.print("[SIGNED_IN] >>>");
     }
 
     private void error(String message) {
-        var error = new Gson().fromJson(message, NOTIFICATION.class);
+        var error = new Gson().fromJson(message, Notification.class);
         System.out.println("Error received");
         System.out.println(error.getMessage());
         System.out.print("[SIGNED_IN] >>>");

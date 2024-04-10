@@ -1,11 +1,13 @@
 package webSocket;
 
 
+import chess.ChessGame;
+import chess.ChessMove;
 import com.google.gson.Gson;
 import model.GameData;
 import org.eclipse.jetty.websocket.api.*;
-import webSocketMessages.serverMessages.ERROR;
-import webSocketMessages.serverMessages.LOAD_GAME;
+import webSocketMessages.serverMessages.Error;
+import webSocketMessages.serverMessages.LoadGame;
 import webSocketMessages.serverMessages.ServerMessage;
 
 import java.io.IOException;
@@ -54,7 +56,7 @@ public class ConnectionManager {
                 if (c.user.equals(user) && c.gameID == gameID) {
                     Gson gson = new Gson();
                     System.out.println(data.game());
-                    c.send(gson.toJson(new LOAD_GAME(data.game())));
+                    c.send(gson.toJson(new LoadGame(data.game())));
                     System.out.println("Sent game data to " + user);
                 }
             } else {
@@ -71,8 +73,28 @@ public class ConnectionManager {
 
     public void error(Session session, String errorMessage) throws IOException {
         Gson gson = new Gson();
-        ERROR error = new ERROR(errorMessage);
+        Error error = new Error(errorMessage);
         String errorJson = gson.toJson(error);
         session.getRemote().sendString(errorJson);
+    }
+
+    public void MakeMove(String user, int gameID, ChessGame move) throws IOException {
+        var removeList = new ArrayList<Connection>();
+        for (var c : connections.values()) {
+            if (c.session.isOpen()) {
+                if (c.gameID == gameID) {
+                    Gson gson = new Gson();
+                    c.send(gson.toJson(new LoadGame(move)));
+                }
+            } else {
+                removeList.add(c);
+            }
+        }
+        // Clean up on isle 5 ... I mean, clean up any connections that were left open.
+        for (var c : removeList) {
+            if (c != null) {
+                connections.remove(c.user);
+            }
+        }
     }
 }
