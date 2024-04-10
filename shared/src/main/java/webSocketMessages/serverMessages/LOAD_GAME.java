@@ -5,15 +5,15 @@ import model.GameData;
 import java.util.Objects;
 
 public class LOAD_GAME extends ServerMessage {
-    public final GameData gameData;
+    public final chess.ChessGame game;
 
-    public LOAD_GAME(GameData gameData) {
+    public LOAD_GAME(chess.ChessGame game) {
         super(ServerMessageType.LOAD_GAME);
-        this.gameData = gameData;
+        this.game = game;
     }
 
-    public GameData getGameData() {
-        return gameData;
+    public chess.ChessGame getGameData() {
+        return game;
     }
 
     @Override
@@ -23,13 +23,13 @@ public class LOAD_GAME extends ServerMessage {
         if (!super.equals(o)) return false;
 
         LOAD_GAME loadGame = (LOAD_GAME) o;
-        return Objects.equals(gameData, loadGame.gameData);
+        return Objects.equals(game, loadGame.game);
     }
 
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + Objects.hashCode(gameData);
+        result = 31 * result + Objects.hashCode(game);
         return result;
     }
 }

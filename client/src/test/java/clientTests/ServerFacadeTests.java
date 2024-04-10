@@ -79,28 +79,28 @@ public class ServerFacadeTests {
     public void createGameTestSuccess() {
         assertDoesNotThrow(() -> facade.register("troy", "password", "email"));
         AuthData result = assertDoesNotThrow(() -> facade.login("troy", "password"));
-        GameData game = assertDoesNotThrow(() -> facade.createGame(result.authToken(), "Troy's Game"));
+        GameData game = assertDoesNotThrow(() -> facade.createGame("Troy's Game", result.authToken()));
         Assertions.assertNotEquals(0, game.gameID());
     }
 
     @Test
     public void createGameTestFailure() {
         assertDoesNotThrow(() -> facade.register("troy", "password", "email"));
-        Assertions.assertThrows(Exception.class, () -> facade.createGame(null, "Troy's Game"));
-        Assertions.assertThrows(Exception.class, () -> facade.createGame("badToken", "Troy's Game"));
+        Assertions.assertThrows(Exception.class, () -> facade.createGame("Troy's Game", null));
+        Assertions.assertThrows(Exception.class, () -> facade.createGame("Troy's Game", "badToken"));
     }
 
     @Test
     public void listGamesTestSuccess() {
         assertDoesNotThrow(() -> facade.register("troy", "password", "email"));
         AuthData result = assertDoesNotThrow(() -> facade.login("troy", "password"));
-        assertDoesNotThrow(() -> facade.createGame(result.authToken(), "Troy's Game"));
+        assertDoesNotThrow(() -> facade.createGame("Troy's Game", result.authToken()));
         assertDoesNotThrow(() -> facade.listGames(result.authToken()));
-        assertDoesNotThrow(() -> facade.createGame(result.authToken(), "Troy's Game 2"));
-        assertDoesNotThrow(() -> facade.createGame(result.authToken(), "Troy's Game 3"));
-        assertDoesNotThrow(() -> facade.createGame(result.authToken(), "Troy's Game 4"));
-        assertDoesNotThrow(() -> facade.createGame(result.authToken(), "Troy's Game 5"));
-        assertDoesNotThrow(() -> facade.createGame(result.authToken(), "Troy's Game 6"));
+        assertDoesNotThrow(() -> facade.createGame("Troy's Game 2", result.authToken()));
+        assertDoesNotThrow(() -> facade.createGame("Troy's Game 3", result.authToken()));
+        assertDoesNotThrow(() -> facade.createGame("Troy's Game 4", result.authToken()));
+        assertDoesNotThrow(() -> facade.createGame("Troy's Game 5", result.authToken()));
+        assertDoesNotThrow(() -> facade.createGame("Troy's Game 6", result.authToken()));
         assertDoesNotThrow(() -> facade.listGames(result.authToken()));
     }
 
@@ -115,7 +115,7 @@ public class ServerFacadeTests {
     public void joinGameTestSuccess() {
         assertDoesNotThrow(() -> facade.register("troy", "password", "email"));
         AuthData result = assertDoesNotThrow(() -> facade.login("troy", "password"));
-        GameData game = assertDoesNotThrow(() -> facade.createGame(result.authToken(), "Troy's Game"));
+        GameData game = assertDoesNotThrow(() -> facade.createGame("Troy's Game", result.authToken()));
         assertDoesNotThrow(() -> facade.joinGame(result.authToken(), new JoinRequest("white", game.gameID())));
     }
 
@@ -123,7 +123,7 @@ public class ServerFacadeTests {
     public void joinGameTestFailure() {
         assertDoesNotThrow(() -> facade.register("troy", "password", "email"));
         AuthData result = assertDoesNotThrow(() -> facade.login("troy", "password"));
-        GameData game = assertDoesNotThrow(() -> facade.createGame(result.authToken(), "Troy's Game"));
+        GameData game = assertDoesNotThrow(() -> facade.createGame("Troy's Game", result.authToken()));
         Assertions.assertThrows(Exception.class, () -> facade.joinGame(null, new JoinRequest("white", game.gameID())));
         Assertions.assertThrows(Exception.class, () -> facade.joinGame("badToken", new JoinRequest("white", game.gameID())));
         assertDoesNotThrow(() -> facade.joinGame(result.authToken(), new JoinRequest("white", game.gameID())));

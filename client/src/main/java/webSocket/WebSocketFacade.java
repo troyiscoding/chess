@@ -57,6 +57,7 @@ public class WebSocketFacade extends Endpoint {
     public void joinPlayer(JOIN_PLAYER join) throws Exception {
         try {
             this.session.getBasicRemote().sendText(new Gson().toJson(join));
+
         } catch (IOException ex) {
             throw new ResponseException(500, ex.getMessage());
         }

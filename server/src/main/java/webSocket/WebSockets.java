@@ -1,11 +1,10 @@
 package webSocket;
 
 import com.google.gson.Gson;
-import dataAccess.AuthDAO;
-import dataAccess.DataAccessException;
-import dataAccess.DatabaseAuthDAO;
+import dataAccess.*;
 import handler.JoinRequest;
 import model.AuthData;
+import model.GameData;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 import org.eclipse.jetty.websocket.api.*;
@@ -23,6 +22,8 @@ public class WebSockets {
     private final ConnectionManager connections = new ConnectionManager();
     private final GameService gameService = new GameService();
     private final AuthDAO authDAO = new DatabaseAuthDAO();
+    private final UserDAO userDAO = new DatabaseUserDAO();
+    private final GameDAO gameDAO = new DatabaseGameDAO();
 
     @OnWebSocketMessage
     public void onMessage(Session session, String message) {
@@ -40,16 +41,17 @@ public class WebSockets {
         var JoinObserver = new Gson().fromJson(Json, JOIN_OBSERVER.class);
         int gameID = JoinObserver.gameID;
         //Print GameID
-        //System.out.println(gameID);
+        System.out.println(gameID);
         var auth = JoinObserver.getAuthString();
-
         try {
-            gameService.joinGame(new JoinRequest(null, gameID), auth);
             AuthData user = authDAO.getAuth(auth);
-            connections.respond(user.username(), gameID);
+            GameData returnGame = gameDAO.findGame(gameID);
+            
+            System.out.println(returnGame.game());
             connections.add(user.username(), session, gameID);
             connections.broadcast(user.username(), new NOTIFICATION(user.username() + " is observing the game!"), gameID);
-        } catch (ResponseException | DataAccessException | IOException e) {
+            connections.respond(user.username(), gameID, returnGame);
+        } catch (DataAccessException | IOException e) {
             throw new RuntimeException(e);
         }
     }

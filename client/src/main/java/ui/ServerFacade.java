@@ -45,7 +45,7 @@ public class ServerFacade {
         this.sendRequest("DELETE", path, null, null, null);
     }
 
-    public GameData createGame(String AuthToken, String gameName) throws RuntimeException {
+    public GameData createGame(String gameName, String AuthToken) throws RuntimeException {
         var path = "/game";
         var request = new GameData(0, null, null, gameName, new chess.ChessGame());
         return this.sendRequest("POST", path, request, AuthToken, GameData.class);

@@ -85,7 +85,7 @@ public class PostLogin {
     public String create(String... params) {
         if (params.length >= 1) {
             try {
-                facade.createGame(authToken, params[0]);
+                facade.createGame(params[0], authToken);
                 return "You have created a game.";
             } catch (RuntimeException e) {
                 return e.getMessage();

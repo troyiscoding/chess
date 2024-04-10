@@ -23,7 +23,7 @@ public class GameService {
                 throw new DataAccessException("Game already exists");
             }
             int gameID = gameDAO.insertGame(game);
-            return new GameData(gameID, null, null, null, null);
+            return new GameData(gameID, null, null, null, new chess.ChessGame());
         } else {
             throw new ResponseException(401, "{ \"message\": \"Error: unauthorized\" }");
         }

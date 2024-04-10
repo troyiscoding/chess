@@ -2,7 +2,9 @@ package webSocket;
 
 
 import com.google.gson.Gson;
+import model.GameData;
 import org.eclipse.jetty.websocket.api.*;
+import webSocketMessages.serverMessages.LOAD_GAME;
 import webSocketMessages.serverMessages.ServerMessage;
 
 import java.io.IOException;
@@ -44,13 +46,15 @@ public class ConnectionManager {
 
     }
 
-    public void respond(String user, int gameID) throws IOException {
+    public void respond(String user, int gameID, GameData data) throws IOException {
         var removeList = new ArrayList<Connection>();
         for (var c : connections.values()) {
             if (c.session.isOpen()) {
                 if (c.user.equals(user) && c.gameID == gameID) {
                     Gson gson = new Gson();
-                    //c.send(gson.toJson(message));
+                    System.out.println(data.game());
+                    c.send(gson.toJson(new LOAD_GAME(data.game())));
+                    System.out.println("Sent game data to " + user);
                 }
             } else {
                 removeList.add(c);
