@@ -2,10 +2,13 @@ package ui;
 
 import chess.ChessBoard;
 import chess.ChessGame;
+import chess.ChessMove;
+import chess.ChessPosition;
 import handler.JoinRequest;
 import handler.ListResponse;
 import webSocket.WebSocketFacade;
 import webSocketMessages.userCommands.LEAVE;
+import webSocketMessages.userCommands.MAKE_MOVE;
 import webSocketMessages.userCommands.RESIGN;
 
 import java.util.Arrays;
@@ -102,9 +105,11 @@ public class GamePlay {
 
         if (params.length >= 1) {
             try {
-
-                return "print board here";
-            } catch (RuntimeException e) {
+                var startPosition = new ChessPosition(Integer.parseInt(params[0]), Integer.parseInt(params[1]));
+                var endPosition = new ChessPosition(Integer.parseInt(params[2]), Integer.parseInt(params[3]));
+                websocket.makeMove(new MAKE_MOVE(authToken, gameID, new ChessMove(startPosition, endPosition, null)));
+                return "Move made.";
+            } catch (Exception e) {
                 return e.getMessage();
             }
         }

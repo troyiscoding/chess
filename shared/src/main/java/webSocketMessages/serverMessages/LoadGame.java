@@ -7,11 +7,7 @@ public class LoadGame extends ServerMessage {
 
     public LoadGame(chess.ChessGame game) {
         super(ServerMessageType.LOAD_GAME);
-        //if (game == null) {
-        //  this.game = new chess.ChessGame();
-        //} else {
         this.game = game;
-        //}
     }
 
     public chess.ChessGame getGameData() {

@@ -5,8 +5,8 @@ import chess.ChessGame;
 import java.util.Objects;
 
 public class JOIN_PLAYER extends UserGameCommand {
-    public final int gameID;
-    public final ChessGame.TeamColor playerColor;
+    public int gameID;
+    public ChessGame.TeamColor playerColor;
 
     public JOIN_PLAYER(String authToken, int gameID, ChessGame.TeamColor playerColor) {
         super(authToken);

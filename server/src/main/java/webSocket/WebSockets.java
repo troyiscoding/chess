@@ -17,6 +17,7 @@ import webSocketMessages.userCommands.*;
 import webSocketMessages.userCommands.UserGameCommand;
 
 import java.io.IOException;
+import java.util.Objects;
 
 @WebSocket
 public class WebSockets {
@@ -49,7 +50,7 @@ public class WebSockets {
             GameData returnGame = gameDAO.findGame(gameID);
             System.out.println(new Gson().toJson(returnGame));
             if (returnGame == null) {
-                connections.error(session, "Error failed to resign game!");
+                connections.error(session, "Error failed to join game!");
             } else {
                 if (UserService.validateAuthTokenBoolean(auth)) {
                     System.out.println(returnGame.game());
@@ -57,7 +58,7 @@ public class WebSockets {
                     connections.broadcast(user.authToken(), new Notification(user.username() + " is observing the game!"), gameID);
                     connections.respond(user.authToken(), gameID, returnGame);
                 } else {
-                    connections.error(session, "Error failed to resign game! Invalid Auth");
+                    connections.error(session, "Error failed to join game! Invalid Auth");
                 }
             }
         } catch (DataAccessException | ResponseException | IOException e) {
@@ -82,22 +83,22 @@ public class WebSockets {
                 GameData game = gameDAO.findGame(gameID);
                 String username = UserService.validateAuthTokenString(auth);
                 if (playerColor == ChessGame.TeamColor.BLACK) {
-                    if (game.blackUsername() == null) {
+                    if (Objects.equals(game.blackUsername(), username)) {
                         gameDAO.updateGame(new GameData(gameID, game.whiteUsername(), username, game.gameName(), game.game()));
                         connections.add(user.authToken(), session, gameID);
                         connections.broadcast(user.authToken(), new Notification(user.username() + " is joining the game!"), gameID);
                         connections.respond(user.authToken(), gameID, returnGame);
                     } else {
-                        connections.error(session, "Error: already taken");
+                        connections.error(session, "Error: black user error");
                     }
                 } else if (playerColor == ChessGame.TeamColor.WHITE) {
-                    if (game.whiteUsername() == null) {
+                    if (Objects.equals(game.whiteUsername(), username)) {
                         gameDAO.updateGame(new GameData(gameID, username, game.blackUsername(), game.gameName(), game.game()));
                         connections.add(user.authToken(), session, gameID);
                         connections.broadcast(user.authToken(), new Notification(user.username() + " is joining the game!"), gameID);
                         connections.respond(user.authToken(), gameID, returnGame);
                     } else {
-                        connections.error(session, "Error: already taken");
+                        connections.error(session, "Error: white user error");
 
                     }
                 } else {

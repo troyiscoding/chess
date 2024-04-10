@@ -1,7 +1,7 @@
 package webSocketMessages.userCommands;
 
 public class JOIN_OBSERVER extends UserGameCommand {
-    public final int gameID;
+    public int gameID;
 
     public JOIN_OBSERVER(String authToken, int gameID) {
         super(authToken);

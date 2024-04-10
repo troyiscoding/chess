@@ -98,4 +98,12 @@ public class WebSocketFacade extends Endpoint {
             throw new ResponseException(500, ex.getMessage());
         }
     }
+
+    public void makeMove(MAKE_MOVE move) throws Exception {
+        try {
+            this.session.getBasicRemote().sendText(new Gson().toJson(move));
+        } catch (IOException ex) {
+            throw new ResponseException(500, ex.getMessage());
+        }
+    }
 }
