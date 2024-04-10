@@ -2,6 +2,8 @@ package webSocket;
 
 import com.google.gson.Gson;
 import service.ResponseException;
+import ui.DrawBoardNew;
+import webSocketMessages.serverMessages.LOAD_GAME;
 import webSocketMessages.serverMessages.NOTIFICATION;
 import webSocketMessages.serverMessages.ServerMessage;
 import webSocketMessages.userCommands.JOIN_OBSERVER;
@@ -42,7 +44,8 @@ public class WebSocketFacade extends Endpoint {
 
     private void loadGame(String message) {
         System.out.println("Game loaded");
-
+        var loadGame = new Gson().fromJson(message, LOAD_GAME.class);
+        DrawBoardNew.drawBoardNew(loadGame.game.getBoard());
         System.out.println("[GAME_LOADED] >>>");
     }
 
