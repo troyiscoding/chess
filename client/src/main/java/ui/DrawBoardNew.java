@@ -12,15 +12,17 @@ public class DrawBoardNew {
     private static final int BOARD_SIZE_IN_SQUARES = 8;
     private static boolean printWhiteBackground;
 
-    public static void drawBoardNew(ChessBoard board) {
+    public static void drawBoardNew(ChessBoard board, ChessGame.TeamColor teamColor) {
         var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
         out.print(ERASE_SCREEN);
-        drawHeaders(out);
-        drawBoardWhite(out, board);
-        out.println();
-        drawHeaders(out);
-        drawBoardBlack(out, board);
 
+        drawHeaders(out);
+        if (teamColor == ChessGame.TeamColor.WHITE) {
+            drawBoardWhite(out, board);
+        } else {
+            drawBoardBlack(out, board);
+        }
+        drawHeaders(out);
     }
 
     private static void drawHeaders(PrintStream out) {
@@ -93,7 +95,6 @@ public class DrawBoardNew {
                         out.print(SET_TEXT_COLOR_RED);
                         out.print(BLACK_KING);
                     }
-
                 } else {
                     out.print("\u2001"); // print empty square
                     out.print("  ");
@@ -167,7 +168,6 @@ public class DrawBoardNew {
                         out.print(SET_TEXT_COLOR_RED);
                         out.print(BLACK_KING);
                     }
-
                 } else {
                     out.print("\u2001"); // print empty square
                     out.print("  ");

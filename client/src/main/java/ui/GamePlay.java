@@ -1,7 +1,10 @@
 package ui;
 
+import chess.ChessGame;
 import handler.JoinRequest;
 import handler.ListResponse;
+import webSocket.WebSocketFacade;
+import webSocketMessages.userCommands.LEAVE;
 
 import java.util.Arrays;
 import java.util.Scanner;
@@ -15,14 +18,22 @@ public class GamePlay {
     public LoginState state = LoginState.SIGNED_IN;
     public ServerFacade facade;
     public String authToken;
+    public WebSocketFacade websocket;
+    public int gameID;
 
     public boolean forfeit;
 
-    public GamePlay(String serverUrl, String token) {
+    public GamePlay(String serverUrl, String token, int gameID) {
         this.serverUrl = serverUrl;
         facade = new ServerFacade(serverUrl);
         authToken = token;
         forfeit = false;
+        this.gameID = gameID;
+        try {
+            websocket = new WebSocketFacade(serverUrl);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public String eval(String input) {
@@ -31,11 +42,11 @@ public class GamePlay {
         var params = Arrays.copyOfRange(tokens, 1, tokens.length);
         return switch (cmd) {
             case "help" -> helpGame(); //Displays text informing the user what actions they can take.
-            case "redraw chess board" -> redraw();
+            case "redraw" -> redraw();
             case "leave" -> leave();
-            case "make move" -> move(params);
+            case "move" -> move(params);
             case "resign" -> resign();
-            case "highlight legal moves" -> highlight();
+            case "highlight" -> highlight();
             default -> helpGame();
         };
     }
@@ -44,22 +55,28 @@ public class GamePlay {
     public String helpGame() {
         return "Available commands:\n" +
                 SET_TEXT_COLOR_BLUE + "Help -" + SET_TEXT_COLOR_WHITE + " Help with possible commands\n" +
-                SET_TEXT_COLOR_BLUE + "Redraw Chess Board -" + SET_TEXT_COLOR_WHITE + " Redraws te chess board.\n" +
+                SET_TEXT_COLOR_BLUE + "Redraw -" + SET_TEXT_COLOR_WHITE + " Redraws te chess board.\n" +
                 SET_TEXT_COLOR_BLUE + "Leave -" + SET_TEXT_COLOR_WHITE + " Removes you from the game.\n" +
-                SET_TEXT_COLOR_BLUE + "Make Move -" + SET_TEXT_COLOR_WHITE + " <Piece Chosen> <Desired Position>\n" +
+                SET_TEXT_COLOR_BLUE + "move -" + SET_TEXT_COLOR_WHITE + "Make Move <Piece Chosen> <Desired Position>\n" +
                 SET_TEXT_COLOR_BLUE + "Resign -" + SET_TEXT_COLOR_WHITE + " Forfeit and end the game.\n" +
-                SET_TEXT_COLOR_BLUE + "Highlight Legal Moves -" + SET_TEXT_COLOR_WHITE + " <Piece To highlight>\n";
+                SET_TEXT_COLOR_BLUE + "Highlight -" + SET_TEXT_COLOR_WHITE + "Highlights Legal Moves <Piece To highlight>\n";
     }
 
     //Redraw Chess Board - Redraws the chess board upon the user's request
     public String redraw() {
-        drawChessBoard();
+        //drawChessBoard();
+        DrawBoardNew.drawBoardNew(WebSocketFacade.chessBoard, ChessGame.TeamColor.WHITE);
         return "";
     }
 
     //Leave - Removes the user from the game (whether they are playing or observing the game).
     public String leave() {
         System.out.println("Leaving Game.");
+        try {
+            websocket.leaveGame(new LEAVE(authToken, gameID));
+        } catch (Exception e) {
+            return e.getMessage();
+        }
         //The client transitions back to the Post-Login UI.
         PostLoginRepl postLoginRepl = new PostLoginRepl(serverUrl, state, authToken);
         postLoginRepl.run();
@@ -93,6 +110,7 @@ public class GamePlay {
         if (result.equals("Y") || result.equals("y")) {
             try {
                 //ServerFacade.resign(authToken);
+
                 forfeit = true;
                 return "You have forfeited the game.";
             } catch (RuntimeException e) {
