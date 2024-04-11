@@ -2,6 +2,7 @@ package ui;
 
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 
 import chess.*;
 
@@ -12,15 +13,15 @@ public class DrawBoardNew {
     private static final int BOARD_SIZE_IN_SQUARES = 8;
     private static boolean printWhiteBackground;
 
-    public static void drawBoardNew(ChessBoard board, ChessGame.TeamColor teamColor) {
+    public static void drawBoardNew(ChessBoard board, ChessGame.TeamColor teamColor, ChessPosition[] squares) {
         var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
         out.print(ERASE_SCREEN);
 
         drawHeaders(out);
         if (teamColor == ChessGame.TeamColor.WHITE) {
-            drawBoardWhite(out, board);
+            drawBoardWhite(out, board, squares);
         } else {
-            drawBoardBlack(out, board);
+            drawBoardBlack(out, board, squares);
         }
         drawHeaders(out);
     }
@@ -35,7 +36,7 @@ public class DrawBoardNew {
         out.println();
     }
 
-    private static void drawBoardWhite(PrintStream out, ChessBoard board) {
+    private static void drawBoardWhite(PrintStream out, ChessBoard board, ChessPosition[] squares) {
         for (int i = BOARD_SIZE_IN_SQUARES - 1; i >= 0; i--) {
             out.print(SET_TEXT_COLOR_WHITE + (i + 1) + " ");
             for (int j = 0; j < BOARD_SIZE_IN_SQUARES; j++) {
@@ -43,6 +44,11 @@ public class DrawBoardNew {
                     out.print(SET_BG_COLOR_DARK_GREY);
                 } else {
                     out.print(SET_BG_COLOR_LIGHT_GREY);
+                }
+                if (squares != null) {
+                    if (Arrays.asList(squares).contains(new ChessPosition(i + 1, j + 1))) {
+                        out.print(SET_BG_COLOR_YELLOW);
+                    }
                 }
                 printHelper(i, j, out, board);
             }
@@ -52,7 +58,7 @@ public class DrawBoardNew {
         }
     }
 
-    private static void drawBoardBlack(PrintStream out, ChessBoard board) {
+    private static void drawBoardBlack(PrintStream out, ChessBoard board, ChessPosition[] squares) {
         //out.print(RESET_TEXT_BOLD_FAINT);
         printWhiteBackground = false;
         for (int i = 0; i < BOARD_SIZE_IN_SQUARES; i++) {
@@ -62,6 +68,11 @@ public class DrawBoardNew {
                     out.print(SET_BG_COLOR_LIGHT_GREY);
                 } else {
                     out.print(SET_BG_COLOR_DARK_GREY);
+                }
+                if (squares != null) {
+                    if (Arrays.asList(squares).contains(new ChessPosition(i + 1, j + 1))) {
+                        out.print(SET_BG_COLOR_YELLOW);
+                    }
                 }
                 printHelper(i, j, out, board);
             }

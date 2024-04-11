@@ -9,8 +9,7 @@ import webSocketMessages.userCommands.Leave;
 import webSocketMessages.userCommands.MakeMove;
 import webSocketMessages.userCommands.Resign;
 
-import java.util.Arrays;
-import java.util.Scanner;
+import java.util.*;
 
 import static ui.EscapeSequences.SET_TEXT_COLOR_BLUE;
 import static ui.EscapeSequences.SET_TEXT_COLOR_WHITE;
@@ -51,7 +50,7 @@ public class GamePlay {
             case "leave" -> leave();
             case "move" -> move(params);
             case "resign" -> resign();
-            case "highlight" -> highlight();
+            case "highlight" -> highlight(params);
             default -> helpGame();
         };
     }
@@ -69,7 +68,7 @@ public class GamePlay {
 
     //Redraw Chess Board - Redraws the chess board upon the user's request
     public String redraw() {
-        DrawBoardNew.drawBoardNew(WebSocketFacade.chessBoard, ChessGame.TeamColor.WHITE);
+        DrawBoardNew.drawBoardNew(WebSocketFacade.chessBoard, ChessGame.TeamColor.WHITE, null);
         return "";
     }
 
@@ -147,24 +146,35 @@ public class GamePlay {
     //This is a local operation and has no effect on remote users screens.
     public String highlight(String... params) {
         if (lockout) {
-            return "You are an observer and cannot resign.";
+            return "You are an observer and cannot highlight.";
         }
         if (forfeit) {
-            return "No moves after game completion due to resignation, checkmate, or stalemate.";
+            return "No highlights after game completion due to resignation, checkmate, or stalemate.";
         }
 
         if (params.length >= 1) {
             try {
-                int Column = Character.toUpperCase(params[0].charAt(0)) - 'A' + 1;
-                int Row = Integer.parseInt(params[0].substring(1));
+                int column = Character.toUpperCase(params[0].charAt(0)) - 'A' + 1;
+                int row = Integer.parseInt(params[0].substring(1));
+                Collection<ChessMove> validList = WebSocketFacade.game.validMoves(new ChessPosition(row, column));
+                //Print things out to make building easier
+                for (ChessMove move : validList) {
+                    System.out.println(move.getEndPosition());
+                }
 
+                List<ChessPosition> squares = new ArrayList<>();
+                for (ChessMove move : validList) {
+                    ChessPosition endPosition = move.getEndPosition();
+                    squares.add(endPosition);
+                }
+                ChessPosition[] printSquares = squares.toArray(new ChessPosition[0]);
+                DrawBoardNew.drawBoardNew(WebSocketFacade.chessBoard, ChessGame.TeamColor.WHITE, printSquares);
                 return " ";
             } catch (Exception e) {
                 return e.getMessage();
             }
         }
-        ChessBoard board = WebSocketFacade.chessBoard;
-        return "";
+        return "Expected command like highlight A2";
     }
 
 }

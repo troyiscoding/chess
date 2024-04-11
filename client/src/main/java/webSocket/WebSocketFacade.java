@@ -19,6 +19,7 @@ import java.net.URI;
 public class WebSocketFacade extends Endpoint {
     public Session session;
     public static ChessBoard chessBoard = new ChessBoard();
+    public static ChessGame game;
 
     public WebSocketFacade(String url) throws Exception {
         URI uri = new URI("ws://localhost:8080/connect");
@@ -47,8 +48,9 @@ public class WebSocketFacade extends Endpoint {
     private void loadGame(String message) {
         System.out.println("Game loaded");
         var loadGame = new Gson().fromJson(message, LoadGame.class);
-        DrawBoardNew.drawBoardNew(loadGame.game.getBoard(), ChessGame.TeamColor.WHITE);
+        DrawBoardNew.drawBoardNew(loadGame.game.getBoard(), ChessGame.TeamColor.WHITE, null);
         chessBoard = loadGame.game.getBoard();
+        game = loadGame.game;
         System.out.print("[SIGNED_IN] >>>");
     }
 
