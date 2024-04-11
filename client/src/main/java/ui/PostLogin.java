@@ -126,9 +126,11 @@ public class PostLogin {
                 if (color.equals("white") || color.equals("WHITE")) {
                     facade.joinGame(authToken, new JoinRequest(color, pickedGame.gameID()));
                     websocket.joinPlayer(new JoinPlayer(authToken, pickedGame.gameID(), ChessGame.TeamColor.WHITE));
+                    WebSocketFacade.setTeamColor(ChessGame.TeamColor.WHITE);
                 } else if (color.equals("black") || color.equals("BLACK")) {
                     facade.joinGame(authToken, new JoinRequest(color, pickedGame.gameID()));
                     websocket.joinPlayer(new JoinPlayer(authToken, pickedGame.gameID(), ChessGame.TeamColor.BLACK));
+                    WebSocketFacade.setTeamColor(ChessGame.TeamColor.BLACK);
                 } else
                     return "Expected: <game number> [WHITE|BLACK|<EMPTY>]";
                 //websocket.joinPlayer(new JOIN_PLAYER(authToken, pickedGame.gameID(), ChessGame.TeamColor.valueOf(color)));
