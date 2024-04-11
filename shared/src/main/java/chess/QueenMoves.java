@@ -7,43 +7,8 @@ public class QueenMoves {
     private final HashSet<ChessMove> myMoves = new HashSet<>();
 
     public Collection<ChessMove> queenMoves(ChessBoard board, ChessPosition myPosition) {
-        int currentRow = myPosition.getRow();
-        int currentCol = myPosition.getColumn();
-        //Move up
-        for (int i = currentRow + 1; i < 9; i++) {
-            if (validMove(i, currentCol, board, myPosition)) break;
-        }
-        //Move down
-        for (int i = currentRow - 1; i > 0; i--) {
-            if (validMove(i, currentCol, board, myPosition)) break;
-        }
-        //Move left
-        for (int i = currentCol - 1; i > 0; i--) {
-            if (validMove(currentRow, i, board, myPosition)) break;
-        }
-        //Move right
-        for (int i = currentCol + 1; i < 9; i++) {
-            if (validMove(currentRow, i, board, myPosition)) {
-                break;
-            }
-        }
-        //Move down-left
-        for (int i = currentRow - 1, j = currentCol - 1; i > 0 && j > 0; i--, j--) {
-            if (validMove(i, j, board, myPosition)) break;
-        }
-        //Move down-right
-        for (int i = currentRow - 1, j = currentCol + 1; i > 0 && j < 9; i--, j++) {
-            if (validMove(i, j, board, myPosition)) break;
-        }
-        //Move up-left
-        for (int i = currentRow + 1, j = currentCol - 1; i < 9 && j > 0; i++, j--) {
-            if (validMove(i, j, board, myPosition)) break;
-        }
-        //Move up-right
-        for (int i = currentRow + 1, j = currentCol + 1; i < 9 && j < 9; i++, j++) {
-            if (validMove(i, j, board, myPosition)) break;
-        }
-        //
+        CheckCross.crossCheck(myPosition, board, myMoves);
+        LineCheck.lineCheck(myPosition, board, myMoves);
         return myMoves;
     }
 

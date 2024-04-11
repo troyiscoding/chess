@@ -24,7 +24,7 @@ public class WebSocketFacade extends Endpoint {
         WebSocketContainer container = ContainerProvider.getWebSocketContainer();
         this.session = container.connectToServer(this, uri);
         this.session.addMessageHandler(new MessageHandler.Whole<String>() {
-            @OnMessage
+            @Override
             public void onMessage(String message) {
                 ServerMessage action = new Gson().fromJson(message, ServerMessage.class);
                 switch (action.getServerMessageType()) {
@@ -63,7 +63,7 @@ public class WebSocketFacade extends Endpoint {
         this.session.getBasicRemote().sendText(msg);
     }
 
-    @OnOpen
+    @Override
     public void onOpen(Session session, EndpointConfig endpointConfig) {
     }
 

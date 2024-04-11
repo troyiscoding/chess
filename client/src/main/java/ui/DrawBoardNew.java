@@ -44,61 +44,7 @@ public class DrawBoardNew {
                 } else {
                     out.print(SET_BG_COLOR_LIGHT_GREY);
                 }
-                printWhiteBackground = !printWhiteBackground;
-                ChessPiece piece = board.squares[i][j];
-                if (piece != null) {
-                    if (piece.getPieceType() == ChessPiece.PieceType.PAWN && piece.getTeamColor() == ChessGame.TeamColor.WHITE) {
-                        out.print(SET_TEXT_COLOR_BLUE);
-                        out.print(WHITE_PAWN);
-                    }
-                    if (piece.getPieceType() == ChessPiece.PieceType.PAWN && piece.getTeamColor() == ChessGame.TeamColor.BLACK) {
-                        out.print(SET_TEXT_COLOR_RED);
-                        out.print(BLACK_PAWN);
-                    }
-                    if (piece.getPieceType() == ChessPiece.PieceType.ROOK && piece.getTeamColor() == ChessGame.TeamColor.WHITE) {
-                        out.print(SET_TEXT_COLOR_BLUE);
-                        out.print(WHITE_ROOK);
-                    }
-                    if (piece.getPieceType() == ChessPiece.PieceType.ROOK && piece.getTeamColor() == ChessGame.TeamColor.BLACK) {
-                        out.print(SET_TEXT_COLOR_RED);
-                        out.print(BLACK_ROOK);
-                    }
-                    if (piece.getPieceType() == ChessPiece.PieceType.KNIGHT && piece.getTeamColor() == ChessGame.TeamColor.WHITE) {
-                        out.print(SET_TEXT_COLOR_BLUE);
-                        out.print(WHITE_KNIGHT);
-                    }
-                    if (piece.getPieceType() == ChessPiece.PieceType.KNIGHT && piece.getTeamColor() == ChessGame.TeamColor.BLACK) {
-                        out.print(SET_TEXT_COLOR_RED);
-                        out.print(BLACK_KNIGHT);
-                    }
-                    if (piece.getPieceType() == ChessPiece.PieceType.BISHOP && piece.getTeamColor() == ChessGame.TeamColor.WHITE) {
-                        out.print(SET_TEXT_COLOR_BLUE);
-                        out.print(WHITE_BISHOP);
-                    }
-                    if (piece.getPieceType() == ChessPiece.PieceType.BISHOP && piece.getTeamColor() == ChessGame.TeamColor.BLACK) {
-                        out.print(SET_TEXT_COLOR_RED);
-                        out.print(BLACK_BISHOP);
-                    }
-                    if (piece.getPieceType() == ChessPiece.PieceType.QUEEN && piece.getTeamColor() == ChessGame.TeamColor.WHITE) {
-                        out.print(SET_TEXT_COLOR_BLUE);
-                        out.print(WHITE_QUEEN);
-                    }
-                    if (piece.getPieceType() == ChessPiece.PieceType.QUEEN && piece.getTeamColor() == ChessGame.TeamColor.BLACK) {
-                        out.print(SET_TEXT_COLOR_RED);
-                        out.print(BLACK_QUEEN);
-                    }
-                    if (piece.getPieceType() == ChessPiece.PieceType.KING && piece.getTeamColor() == ChessGame.TeamColor.WHITE) {
-                        out.print(SET_TEXT_COLOR_BLUE);
-                        out.print(WHITE_KING);
-                    }
-                    if (piece.getPieceType() == ChessPiece.PieceType.KING && piece.getTeamColor() == ChessGame.TeamColor.BLACK) {
-                        out.print(SET_TEXT_COLOR_RED);
-                        out.print(BLACK_KING);
-                    }
-                } else {
-                    out.print("\u2001"); // print empty square
-                    out.print("  ");
-                }
+                printHelper(i, j, out, board);
             }
             out.print(INTILIJ_HACK);
             out.print(SET_TEXT_COLOR_WHITE + " " + (i + 1) + " ");
@@ -117,65 +63,69 @@ public class DrawBoardNew {
                 } else {
                     out.print(SET_BG_COLOR_DARK_GREY);
                 }
-                printWhiteBackground = !printWhiteBackground;
-                ChessPiece piece = board.squares[i][j];
-                if (piece != null) {
-                    if (piece.getPieceType() == ChessPiece.PieceType.PAWN && piece.getTeamColor() == ChessGame.TeamColor.WHITE) {
-                        out.print(SET_TEXT_COLOR_BLUE);
-                        out.print(WHITE_PAWN);
-                    }
-                    if (piece.getPieceType() == ChessPiece.PieceType.PAWN && piece.getTeamColor() == ChessGame.TeamColor.BLACK) {
-                        out.print(SET_TEXT_COLOR_RED);
-                        out.print(BLACK_PAWN);
-                    }
-                    if (piece.getPieceType() == ChessPiece.PieceType.ROOK && piece.getTeamColor() == ChessGame.TeamColor.WHITE) {
-                        out.print(SET_TEXT_COLOR_BLUE);
-                        out.print(WHITE_ROOK);
-                    }
-                    if (piece.getPieceType() == ChessPiece.PieceType.ROOK && piece.getTeamColor() == ChessGame.TeamColor.BLACK) {
-                        out.print(SET_TEXT_COLOR_RED);
-                        out.print(BLACK_ROOK);
-                    }
-                    if (piece.getPieceType() == ChessPiece.PieceType.KNIGHT && piece.getTeamColor() == ChessGame.TeamColor.WHITE) {
-                        out.print(SET_TEXT_COLOR_BLUE);
-                        out.print(WHITE_KNIGHT);
-                    }
-                    if (piece.getPieceType() == ChessPiece.PieceType.KNIGHT && piece.getTeamColor() == ChessGame.TeamColor.BLACK) {
-                        out.print(SET_TEXT_COLOR_RED);
-                        out.print(BLACK_KNIGHT);
-                    }
-                    if (piece.getPieceType() == ChessPiece.PieceType.BISHOP && piece.getTeamColor() == ChessGame.TeamColor.WHITE) {
-                        out.print(SET_TEXT_COLOR_BLUE);
-                        out.print(WHITE_BISHOP);
-                    }
-                    if (piece.getPieceType() == ChessPiece.PieceType.BISHOP && piece.getTeamColor() == ChessGame.TeamColor.BLACK) {
-                        out.print(SET_TEXT_COLOR_RED);
-                        out.print(BLACK_BISHOP);
-                    }
-                    if (piece.getPieceType() == ChessPiece.PieceType.QUEEN && piece.getTeamColor() == ChessGame.TeamColor.WHITE) {
-                        out.print(SET_TEXT_COLOR_BLUE);
-                        out.print(WHITE_QUEEN);
-                    }
-                    if (piece.getPieceType() == ChessPiece.PieceType.QUEEN && piece.getTeamColor() == ChessGame.TeamColor.BLACK) {
-                        out.print(SET_TEXT_COLOR_RED);
-                        out.print(BLACK_QUEEN);
-                    }
-                    if (piece.getPieceType() == ChessPiece.PieceType.KING && piece.getTeamColor() == ChessGame.TeamColor.WHITE) {
-                        out.print(SET_TEXT_COLOR_BLUE);
-                        out.print(WHITE_KING);
-                    }
-                    if (piece.getPieceType() == ChessPiece.PieceType.KING && piece.getTeamColor() == ChessGame.TeamColor.BLACK) {
-                        out.print(SET_TEXT_COLOR_RED);
-                        out.print(BLACK_KING);
-                    }
-                } else {
-                    out.print("\u2001"); // print empty square
-                    out.print("  ");
-                }
+                printHelper(i, j, out, board);
             }
             out.print(INTILIJ_HACK);
             out.print(SET_TEXT_COLOR_WHITE + " " + (i + 1) + " ");
             out.println();
+        }
+    }
+
+    private static void printHelper(int i, int j, PrintStream out, ChessBoard board) {
+        printWhiteBackground = !printWhiteBackground;
+        ChessPiece piece = board.squares[i][j];
+        if (piece != null) {
+            if (piece.getPieceType() == ChessPiece.PieceType.PAWN && piece.getTeamColor() == ChessGame.TeamColor.WHITE) {
+                out.print(SET_TEXT_COLOR_BLUE);
+                out.print(WHITE_PAWN);
+            }
+            if (piece.getPieceType() == ChessPiece.PieceType.PAWN && piece.getTeamColor() == ChessGame.TeamColor.BLACK) {
+                out.print(SET_TEXT_COLOR_RED);
+                out.print(BLACK_PAWN);
+            }
+            if (piece.getPieceType() == ChessPiece.PieceType.ROOK && piece.getTeamColor() == ChessGame.TeamColor.WHITE) {
+                out.print(SET_TEXT_COLOR_BLUE);
+                out.print(WHITE_ROOK);
+            }
+            if (piece.getPieceType() == ChessPiece.PieceType.ROOK && piece.getTeamColor() == ChessGame.TeamColor.BLACK) {
+                out.print(SET_TEXT_COLOR_RED);
+                out.print(BLACK_ROOK);
+            }
+            if (piece.getPieceType() == ChessPiece.PieceType.KNIGHT && piece.getTeamColor() == ChessGame.TeamColor.WHITE) {
+                out.print(SET_TEXT_COLOR_BLUE);
+                out.print(WHITE_KNIGHT);
+            }
+            if (piece.getPieceType() == ChessPiece.PieceType.KNIGHT && piece.getTeamColor() == ChessGame.TeamColor.BLACK) {
+                out.print(SET_TEXT_COLOR_RED);
+                out.print(BLACK_KNIGHT);
+            }
+            if (piece.getPieceType() == ChessPiece.PieceType.BISHOP && piece.getTeamColor() == ChessGame.TeamColor.WHITE) {
+                out.print(SET_TEXT_COLOR_BLUE);
+                out.print(WHITE_BISHOP);
+            }
+            if (piece.getPieceType() == ChessPiece.PieceType.BISHOP && piece.getTeamColor() == ChessGame.TeamColor.BLACK) {
+                out.print(SET_TEXT_COLOR_RED);
+                out.print(BLACK_BISHOP);
+            }
+            if (piece.getPieceType() == ChessPiece.PieceType.QUEEN && piece.getTeamColor() == ChessGame.TeamColor.WHITE) {
+                out.print(SET_TEXT_COLOR_BLUE);
+                out.print(WHITE_QUEEN);
+            }
+            if (piece.getPieceType() == ChessPiece.PieceType.QUEEN && piece.getTeamColor() == ChessGame.TeamColor.BLACK) {
+                out.print(SET_TEXT_COLOR_RED);
+                out.print(BLACK_QUEEN);
+            }
+            if (piece.getPieceType() == ChessPiece.PieceType.KING && piece.getTeamColor() == ChessGame.TeamColor.WHITE) {
+                out.print(SET_TEXT_COLOR_BLUE);
+                out.print(WHITE_KING);
+            }
+            if (piece.getPieceType() == ChessPiece.PieceType.KING && piece.getTeamColor() == ChessGame.TeamColor.BLACK) {
+                out.print(SET_TEXT_COLOR_RED);
+                out.print(BLACK_KING);
+            }
+        } else {
+            out.print("\u2001"); // print empty square
+            out.print("  ");
         }
     }
 }
