@@ -196,6 +196,10 @@ public class WebSockets {
                     gameDAO.updateGame(returnGame);
                     connections.sendMove(user.authToken(), gameID, returnGame.game());
                     connections.broadcast(user.authToken(), new Notification(user.username() + " has made a move"), gameID);
+                    if (returnGame.game().isInStalemate(ChessGame.TeamColor.WHITE) || returnGame.game().isInCheckmate(ChessGame.TeamColor.WHITE) || returnGame.game().isInStalemate(ChessGame.TeamColor.BLACK) || returnGame.game().isInCheckmate(ChessGame.TeamColor.BLACK)) {
+                        connections.broadcastResign(user.authToken(), new Notification("Game Over, In Checkmate or Stalemate"), gameID);
+                        //returnGame.game().isOver = true;
+                    }
                 }
             } else {
                 connections.error(session, "Error you choose a blank square!");

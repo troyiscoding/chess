@@ -44,7 +44,6 @@ public class WebSocketFacade extends Endpoint {
     }
 
     private void notification(String message) {
-        System.out.println("Notification received");
         var notification = new Gson().fromJson(message, Notification.class);
         System.out.println(notification.getMessage());
         System.out.println("[IN_GAME] >>>");

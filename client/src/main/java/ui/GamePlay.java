@@ -168,7 +168,12 @@ public class GamePlay {
                     squares.add(endPosition);
                 }
                 ChessPosition[] printSquares = squares.toArray(new ChessPosition[0]);
-                DrawBoardNew.drawBoardNew(WebSocketFacade.chessBoard, ChessGame.TeamColor.WHITE, printSquares);
+                //DrawBoardNew.drawBoardNew(WebSocketFacade.chessBoard, ChessGame.TeamColor.WHITE, printSquares);
+                if (WebSocketFacade.teamColor == ChessGame.TeamColor.WHITE) {
+                    DrawBoardNew.drawBoardNew(WebSocketFacade.chessBoard, ChessGame.TeamColor.WHITE, printSquares);
+                } else {
+                    DrawBoardNew.drawBoardNew(WebSocketFacade.chessBoard, ChessGame.TeamColor.BLACK, printSquares);
+                }
                 return " ";
             } catch (Exception e) {
                 return e.getMessage();
