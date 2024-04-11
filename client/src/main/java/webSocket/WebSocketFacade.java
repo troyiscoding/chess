@@ -24,6 +24,7 @@ public class WebSocketFacade extends Endpoint {
         WebSocketContainer container = ContainerProvider.getWebSocketContainer();
         this.session = container.connectToServer(this, uri);
         this.session.addMessageHandler(new MessageHandler.Whole<String>() {
+            @OnMessage
             public void onMessage(String message) {
                 ServerMessage action = new Gson().fromJson(message, ServerMessage.class);
                 switch (action.getServerMessageType()) {
@@ -62,10 +63,11 @@ public class WebSocketFacade extends Endpoint {
         this.session.getBasicRemote().sendText(msg);
     }
 
+    @OnOpen
     public void onOpen(Session session, EndpointConfig endpointConfig) {
     }
 
-    public void joinPlayer(JOIN_PLAYER join) throws Exception {
+    public void joinPlayer(JoinPlayer join) throws Exception {
         try {
             this.session.getBasicRemote().sendText(new Gson().toJson(join));
 
@@ -74,7 +76,7 @@ public class WebSocketFacade extends Endpoint {
         }
     }
 
-    public void observePlayer(JOIN_OBSERVER join) throws Exception {
+    public void observePlayer(JoinObserver join) throws Exception {
         try {
             this.session.getBasicRemote().sendText(new Gson().toJson(join));
         } catch (IOException ex) {
@@ -82,7 +84,7 @@ public class WebSocketFacade extends Endpoint {
         }
     }
 
-    public void leaveGame(LEAVE leave) throws Exception {
+    public void leaveGame(Leave leave) throws Exception {
         try {
             this.session.getBasicRemote().sendText(new Gson().toJson(leave));
         } catch (IOException ex) {
@@ -90,7 +92,7 @@ public class WebSocketFacade extends Endpoint {
         }
     }
 
-    public void resignGame(RESIGN resign) throws Exception {
+    public void resignGame(Resign resign) throws Exception {
         try {
             this.session.getBasicRemote().sendText(new Gson().toJson(resign));
         } catch (IOException ex) {
@@ -98,7 +100,7 @@ public class WebSocketFacade extends Endpoint {
         }
     }
 
-    public void makeMove(MAKE_MOVE move) throws Exception {
+    public void makeMove(MakeMove move) throws Exception {
         try {
             this.session.getBasicRemote().sendText(new Gson().toJson(move));
         } catch (IOException ex) {

@@ -23,8 +23,8 @@ public class PostLoginRepl {
         while (!result.equals("quit") && client.states == LoginState.SIGNED_IN) {
             System.out.print("[" + client.states + "]" + " >>> "); //Print out Current State and Make Text Entry
             result = scanner.nextLine(); //READ
-            String Print = client.eval(result); //EVAL
-            System.out.print(Print); //PRINT
+            String print = client.eval(result); //EVAL
+            System.out.print(print); //PRINT
             System.out.println();
         }
         scanner.close();

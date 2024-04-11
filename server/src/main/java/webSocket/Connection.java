@@ -18,8 +18,4 @@ public class Connection {
     public void send(String message) throws IOException {
         session.getRemote().sendString(message);
     }
-
-    public void setGameID(int gameID) {
-        this.gameID = gameID;
-    }
 }

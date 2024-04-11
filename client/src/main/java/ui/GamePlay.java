@@ -4,17 +4,14 @@ import chess.ChessBoard;
 import chess.ChessGame;
 import chess.ChessMove;
 import chess.ChessPosition;
-import handler.JoinRequest;
-import handler.ListResponse;
 import webSocket.WebSocketFacade;
-import webSocketMessages.userCommands.LEAVE;
-import webSocketMessages.userCommands.MAKE_MOVE;
-import webSocketMessages.userCommands.RESIGN;
+import webSocketMessages.userCommands.Leave;
+import webSocketMessages.userCommands.MakeMove;
+import webSocketMessages.userCommands.Resign;
 
 import java.util.Arrays;
 import java.util.Scanner;
 
-import static ui.DrawChessBoard.drawChessBoard;
 import static ui.EscapeSequences.SET_TEXT_COLOR_BLUE;
 import static ui.EscapeSequences.SET_TEXT_COLOR_WHITE;
 
@@ -81,7 +78,7 @@ public class GamePlay {
     public String leave() {
         System.out.println("Leaving Game.");
         try {
-            websocket.leaveGame(new LEAVE(authToken, gameID));
+            websocket.leaveGame(new Leave(authToken, gameID));
         } catch (Exception e) {
             return e.getMessage();
         }
@@ -107,7 +104,7 @@ public class GamePlay {
             try {
                 var startPosition = new ChessPosition(Integer.parseInt(params[0]), Integer.parseInt(params[1]));
                 var endPosition = new ChessPosition(Integer.parseInt(params[2]), Integer.parseInt(params[3]));
-                websocket.makeMove(new MAKE_MOVE(authToken, gameID, new ChessMove(startPosition, endPosition, null)));
+                websocket.makeMove(new MakeMove(authToken, gameID, new ChessMove(startPosition, endPosition, null)));
                 return "Move made.";
             } catch (Exception e) {
                 return e.getMessage();
@@ -130,7 +127,7 @@ public class GamePlay {
         if (result.equals("Y") || result.equals("y")) {
             try {
                 //ServerFacade.resign(authToken);
-                websocket.resignGame(new RESIGN(authToken, gameID));
+                websocket.resignGame(new Resign(authToken, gameID));
                 forfeit = true;
                 return "You have forfeited the game.";
             } catch (Exception e) {
@@ -149,7 +146,6 @@ public class GamePlay {
             return "You are an observer and cannot resign.";
         }
         ChessBoard board = WebSocketFacade.chessBoard;
-        drawChessBoard();
         return "";
     }
 

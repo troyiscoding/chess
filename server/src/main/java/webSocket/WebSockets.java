@@ -31,20 +31,20 @@ public class WebSockets {
     public void onMessage(Session session, String message) throws IOException {
         UserGameCommand action = new Gson().fromJson(message, UserGameCommand.class);
         switch (action.getCommandType()) {
-            case JOIN_OBSERVER -> JoinObserver(message, session);
-            case JOIN_PLAYER -> JoinPlayer(message, session);
+            case JOIN_OBSERVER -> joinObserver(message, session);
+            case JOIN_PLAYER -> joinPlayer(message, session);
             case LEAVE -> leaveGame(message, session);
             case MAKE_MOVE -> makeMove(message, session);
             case RESIGN -> resignGame(message, session);
         }
     }
 
-    private void JoinObserver(String Json, Session session) throws IOException {
-        var JoinObserver = new Gson().fromJson(Json, JOIN_OBSERVER.class);
-        int gameID = JoinObserver.gameID;
+    private void joinObserver(String json, Session session) throws IOException {
+        var joinObserver = new Gson().fromJson(json, webSocketMessages.userCommands.JoinObserver.class);
+        int gameID = joinObserver.gameID;
         //Print GameID
         System.out.println(gameID);
-        var auth = JoinObserver.getAuthString();
+        var auth = joinObserver.getAuthString();
         try {
             AuthData user = authDAO.getAuth(auth);
             GameData returnGame = gameDAO.findGame(gameID);
@@ -66,13 +66,13 @@ public class WebSockets {
         }
     }
 
-    private void JoinPlayer(String Json, Session session) throws IOException {
-        var Join = new Gson().fromJson(Json, JOIN_PLAYER.class);
-        int gameID = Join.gameID;
+    private void joinPlayer(String json, Session session) throws IOException {
+        var join = new Gson().fromJson(json, JoinPlayer.class);
+        int gameID = join.gameID;
         //Print GameID
         System.out.println(gameID);
-        var auth = Join.getAuthString();
-        var playerColor = Join.playerColor;
+        var auth = join.getAuthString();
+        var playerColor = join.playerColor;
         try {
             GameData returnGame = gameDAO.findGame(gameID);
             AuthData user = authDAO.getAuth(auth);
@@ -114,12 +114,12 @@ public class WebSockets {
         }
     }
 
-    private void leaveGame(String Json, Session session) throws IOException {
-        var Leave = new Gson().fromJson(Json, LEAVE.class);
-        int gameID = Leave.gameID;
+    private void leaveGame(String json, Session session) throws IOException {
+        var leave = new Gson().fromJson(json, webSocketMessages.userCommands.Leave.class);
+        int gameID = leave.gameID;
         //Print GameID
         //System.out.println(gameID);
-        var auth = Leave.getAuthString();
+        var auth = leave.getAuthString();
         try {
             AuthData user = authDAO.getAuth(auth);
             GameData returnGame = gameDAO.findGame(gameID);
@@ -131,12 +131,12 @@ public class WebSockets {
         }
     }
 
-    private void resignGame(String Json, Session session) throws IOException {
-        var Resign = new Gson().fromJson(Json, RESIGN.class);
-        int gameID = Resign.gameID;
+    private void resignGame(String json, Session session) throws IOException {
+        var resign = new Gson().fromJson(json, webSocketMessages.userCommands.Resign.class);
+        int gameID = resign.gameID;
         //Print GameID
         //System.out.println(gameID);
-        var auth = Resign.getAuthString();
+        var auth = resign.getAuthString();
         try {
             AuthData user = authDAO.getAuth(auth);
             GameData returnGame = gameDAO.findGame(gameID);
@@ -161,13 +161,13 @@ public class WebSockets {
         }
     }
 
-    private void makeMove(String Json, Session session) throws IOException {
-        var Move = new Gson().fromJson(Json, MAKE_MOVE.class);
-        int gameID = Move.gameID;
+    private void makeMove(String json, Session session) throws IOException {
+        var moveComm = new Gson().fromJson(json, MakeMove.class);
+        int gameID = moveComm.gameID;
         //Print GameID
         //System.out.println(gameID);
-        var auth = Move.getAuthString();
-        var move = Move.move;
+        var auth = moveComm.getAuthString();
+        var move = moveComm.move;
         try {
             AuthData user = authDAO.getAuth(auth);
             GameData returnGame = gameDAO.findGame(gameID);
@@ -191,7 +191,7 @@ public class WebSockets {
             } else {
                 returnGame.game().makeMove(move);
                 gameDAO.updateGame(returnGame);
-                connections.MakeMove(user.authToken(), gameID, returnGame.game());
+                connections.sendMove(user.authToken(), gameID, returnGame.game());
                 connections.broadcast(user.authToken(), new Notification(user.username() + " has made a move"), gameID);
             }
         } catch (DataAccessException | InvalidMoveException | IOException e) {

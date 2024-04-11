@@ -1,12 +1,22 @@
 package webSocketMessages.userCommands;
 
-public class RESIGN extends UserGameCommand {
-    public final int gameID;
+import chess.ChessMove;
 
-    public RESIGN(String authToken, int gameID) {
+import java.util.Objects;
+
+public class MakeMove extends UserGameCommand {
+    public final int gameID;
+    public final ChessMove move;
+
+    public MakeMove(String authToken, int gameID, ChessMove move) {
         super(authToken);
         this.gameID = gameID;
-        this.commandType = CommandType.RESIGN;
+        this.move = move;
+        this.commandType = CommandType.MAKE_MOVE;
+    }
+
+    public ChessMove getMove() {
+        return move;
     }
 
     public int getGameID() {
@@ -19,14 +29,15 @@ public class RESIGN extends UserGameCommand {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
 
-        RESIGN resign = (RESIGN) o;
-        return gameID == resign.gameID;
+        MakeMove makeMove = (MakeMove) o;
+        return gameID == makeMove.gameID && Objects.equals(move, makeMove.move);
     }
 
     @Override
     public int hashCode() {
         int result = super.hashCode();
         result = 31 * result + gameID;
+        result = 31 * result + Objects.hashCode(move);
         return result;
     }
 }

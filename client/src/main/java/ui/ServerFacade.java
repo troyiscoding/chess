@@ -35,9 +35,9 @@ public class ServerFacade {
         return this.sendRequest("POST", path, request, null, AuthData.class);
     }
 
-    public void logout(String AuthToken) throws RuntimeException {
+    public void logout(String authToken) throws RuntimeException {
         var path = "/session";
-        this.sendRequest("DELETE", path, null, AuthToken, null);
+        this.sendRequest("DELETE", path, null, authToken, null);
     }
 
     public void clearData() throws RuntimeException {
@@ -45,20 +45,20 @@ public class ServerFacade {
         this.sendRequest("DELETE", path, null, null, null);
     }
 
-    public GameData createGame(String gameName, String AuthToken) throws RuntimeException {
+    public GameData createGame(String gameName, String authToken) throws RuntimeException {
         var path = "/game";
         var request = new GameData(0, null, null, gameName, new chess.ChessGame());
-        return this.sendRequest("POST", path, request, AuthToken, GameData.class);
+        return this.sendRequest("POST", path, request, authToken, GameData.class);
     }
 
-    public List listGames(String AuthToken) throws RuntimeException {
+    public List listGames(String authToken) throws RuntimeException {
         var path = "/game";
-        return this.sendRequest("GET", path, null, AuthToken, List.class);
+        return this.sendRequest("GET", path, null, authToken, List.class);
     }
 
-    public void joinGame(String AuthToken, JoinRequest request) throws RuntimeException {
+    public void joinGame(String authToken, JoinRequest request) throws RuntimeException {
         var path = "/game";
-        this.sendRequest("PUT", path, request, AuthToken, null);
+        this.sendRequest("PUT", path, request, authToken, null);
     }
 
 

@@ -75,7 +75,7 @@ public class Server {
             res.body(new Gson().toJson(auth));
             return new Gson().toJson(auth);
         } catch (ResponseException e) {
-            res.status(e.StatusCode());
+            res.status(e.statusCode());
             return e.getMessage();
         } catch (DataAccessException e) {
             res.status(500);
@@ -91,7 +91,7 @@ public class Server {
             res.type("application/json");
             return new Gson().toJson(auth);
         } catch (ResponseException e) {
-            res.status(e.StatusCode());
+            res.status(e.statusCode());
             return e.getMessage();
         } catch (DataAccessException e) {
             res.status(500);
@@ -108,7 +108,7 @@ public class Server {
             return "";
 
         } catch (ResponseException e) {
-            res.status(e.StatusCode());
+            res.status(e.statusCode());
             return e.getMessage();
         } catch (DataAccessException e) {
             res.status(500);
@@ -124,7 +124,7 @@ public class Server {
             res.type("application/json");
             return new Gson().toJson(Map.of("games", gameData));
         } catch (ResponseException e) {
-            res.status(e.StatusCode());
+            res.status(e.statusCode());
             return e.getMessage();
         } catch (DataAccessException e) {
             res.status(500);
@@ -142,7 +142,7 @@ public class Server {
             res.body(new Gson().toJson(returnGameData));
             return new Gson().toJson(returnGameData);
         } catch (ResponseException e) {
-            res.status(e.StatusCode());
+            res.status(e.statusCode());
             return e.getMessage();
         } catch (DataAccessException e) {
             res.status(500);
@@ -158,7 +158,7 @@ public class Server {
             res.status(200);
             return "";
         } catch (ResponseException e) {
-            res.status(e.StatusCode());
+            res.status(e.statusCode());
             return e.getMessage();
         } catch (DataAccessException e) {
             res.status(500);
@@ -167,7 +167,7 @@ public class Server {
     }
 
     private void exceptionHandler(ResponseException ex, Request req, Response res) {
-        res.status(ex.StatusCode());
+        res.status(ex.statusCode());
     }
 
 

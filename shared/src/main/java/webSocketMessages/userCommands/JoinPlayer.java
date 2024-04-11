@@ -4,11 +4,11 @@ import chess.ChessGame;
 
 import java.util.Objects;
 
-public class JOIN_PLAYER extends UserGameCommand {
+public class JoinPlayer extends UserGameCommand {
     public int gameID;
     public ChessGame.TeamColor playerColor;
 
-    public JOIN_PLAYER(String authToken, int gameID, ChessGame.TeamColor playerColor) {
+    public JoinPlayer(String authToken, int gameID, ChessGame.TeamColor playerColor) {
         super(authToken);
         this.gameID = gameID;
         this.playerColor = playerColor;
@@ -29,7 +29,7 @@ public class JOIN_PLAYER extends UserGameCommand {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
 
-        JOIN_PLAYER that = (JOIN_PLAYER) o;
+        JoinPlayer that = (JoinPlayer) o;
         return gameID == that.gameID && playerColor == that.playerColor;
     }
 

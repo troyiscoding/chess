@@ -2,7 +2,6 @@ package webSocket;
 
 
 import chess.ChessGame;
-import chess.ChessMove;
 import com.google.gson.Gson;
 import model.GameData;
 import org.eclipse.jetty.websocket.api.*;
@@ -79,7 +78,7 @@ public class ConnectionManager {
         session.getRemote().sendString(errorJson);
     }
 
-    public void MakeMove(String user, int gameID, ChessGame move) throws IOException {
+    public void sendMove(String user, int gameID, ChessGame move) throws IOException {
         var removeList = new ArrayList<Connection>();
         for (var c : connections.values()) {
             if (c.session.isOpen()) {

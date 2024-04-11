@@ -1,12 +1,12 @@
 package webSocketMessages.userCommands;
 
-public class LEAVE extends UserGameCommand {
-    public final int gameID;
+public class JoinObserver extends UserGameCommand {
+    public int gameID;
 
-    public LEAVE(String authToken, int gameID) {
+    public JoinObserver(String authToken, int gameID) {
         super(authToken);
         this.gameID = gameID;
-        this.commandType = CommandType.LEAVE;
+        this.commandType = CommandType.JOIN_OBSERVER;
     }
 
     public int getGameID() {
@@ -19,8 +19,8 @@ public class LEAVE extends UserGameCommand {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
 
-        LEAVE leave = (LEAVE) o;
-        return gameID == leave.gameID;
+        JoinObserver that = (JoinObserver) o;
+        return gameID == that.gameID;
     }
 
     @Override

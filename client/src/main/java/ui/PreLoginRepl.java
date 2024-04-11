@@ -23,8 +23,8 @@ public class PreLoginRepl {
         while (!result.equals("quit") && client.state == LoginState.SIGNED_OUT) {
             System.out.print("[" + LoginState.SIGNED_OUT + "]" + " >>> ");
             result = scanner.nextLine(); //READ
-            String Print = client.eval(result); //EVAL
-            System.out.print(Print); //PRINT
+            String print = client.eval(result); //EVAL
+            System.out.print(print); //PRINT
             System.out.println();
         }
         scanner.close();

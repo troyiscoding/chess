@@ -1,12 +1,11 @@
 package ui;
 
 import chess.ChessGame;
-import handler.JoinRequest;
 import handler.List;
 import handler.ListResponse;
 import webSocket.WebSocketFacade;
-import webSocketMessages.userCommands.JOIN_OBSERVER;
-import webSocketMessages.userCommands.JOIN_PLAYER;
+import webSocketMessages.userCommands.JoinObserver;
+import webSocketMessages.userCommands.JoinPlayer;
 
 
 import java.util.Arrays;
@@ -124,9 +123,9 @@ public class PostLogin {
                 String color = params[1];
                 //facade.joinGame(authToken, new JoinRequest(color, pickedGame.gameID()));
                 if (color.equals("white") || color.equals("WHITE"))
-                    websocket.joinPlayer(new JOIN_PLAYER(authToken, pickedGame.gameID(), ChessGame.TeamColor.WHITE));
+                    websocket.joinPlayer(new JoinPlayer(authToken, pickedGame.gameID(), ChessGame.TeamColor.WHITE));
                 else if (color.equals("black") || color.equals("BLACK"))
-                    websocket.joinPlayer(new JOIN_PLAYER(authToken, pickedGame.gameID(), ChessGame.TeamColor.BLACK));
+                    websocket.joinPlayer(new JoinPlayer(authToken, pickedGame.gameID(), ChessGame.TeamColor.BLACK));
                 else
                     return "Expected: <game number> [WHITE|BLACK|<EMPTY>]";
                 //websocket.joinPlayer(new JOIN_PLAYER(authToken, pickedGame.gameID(), ChessGame.TeamColor.valueOf(color)));
@@ -150,14 +149,13 @@ public class PostLogin {
         if (params.length >= 1) {
             ListResponse pickedGame = list.games().get(Integer.parseInt(params[0]));
             try {
-                websocket.observePlayer(new JOIN_OBSERVER(authToken, pickedGame.gameID()));
+                websocket.observePlayer(new JoinObserver(authToken, pickedGame.gameID()));
                 //facade.joinGame(authToken, new JoinRequest("", pickedGame.gameID()));
             } catch (RuntimeException e) {
                 return e.getMessage();
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
-            //DrawChessBoard.drawChessBoard();
             GamePlayRepl gameInstance = new GamePlayRepl(serverUrl, authToken, pickedGame.gameID(), true);
             return gameInstance.run();
         }

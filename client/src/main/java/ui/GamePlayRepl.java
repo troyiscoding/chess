@@ -21,8 +21,8 @@ public class GamePlayRepl {
         while (!result.equals("leave")) {
             System.out.print("[" + "IN_GAME" + "]" + " >>> ");
             result = scanner.nextLine(); //READ
-            String Print = game.eval(result); //EVAL
-            System.out.print(Print); //PRINT
+            String print = game.eval(result); //EVAL
+            System.out.print(print); //PRINT
             System.out.println();
         }
         scanner.close();
