@@ -49,6 +49,7 @@ public class ConnectionManager {
 
     }
 
+    //Load Game For just the user
     public void respond(String user, int gameID, GameData data) throws IOException {
         var removeList = new ArrayList<Connection>();
         for (var c : connections.values()) {
@@ -96,5 +97,26 @@ public class ConnectionManager {
                 connections.remove(c.user);
             }
         }
+    }
+
+    public void broadcastResign(String user, ServerMessage message, int gameID) throws IOException {
+        var removeList = new ArrayList<Connection>();
+        for (var c : connections.values()) {
+            if (c.session.isOpen()) {
+                if (c.gameID == gameID) {
+                    Gson gson = new Gson();
+                    c.send(gson.toJson(message));
+                }
+            } else {
+                removeList.add(c);
+            }
+        }
+        // Clean up on isle 5 ... I mean, clean up any connections that were left open.
+        for (var c : removeList) {
+            if (c != null) {
+                connections.remove(c.user);
+            }
+        }
+
     }
 }

@@ -143,9 +143,19 @@ public class WebSockets {
             if (returnGame == null) {
                 connections.error(session, "Error failed to resign game!");
             }
-            connections.remove(user.authToken());
-            connections.broadcast(user.authToken(), new Notification(user.username() + " has resigned the game!"), gameID);
-            connections.respond(user.authToken(), gameID, returnGame);
+            assert returnGame != null;
+            if (!Objects.equals(returnGame.blackUsername(), user.username()) && !Objects.equals(returnGame.whiteUsername(), user.username())) {
+                connections.error(session, "Error You are just an observer.");
+            } else if (returnGame.game().isOver) {
+                connections.error(session, "Error game is over.");
+            } else {
+                connections.broadcastResign(user.authToken(), new Notification(user.username() + " has resigned the game!"), gameID);
+                returnGame.game().isOver = true;
+                gameDAO.updateGame(returnGame);
+
+                connections.remove(user.authToken());
+                //connections.respond(user.authToken(), gameID, returnGame);
+            }
         } catch (DataAccessException | IOException e) {
             connections.error(session, "Error failed to resign game!");
         }
@@ -162,10 +172,27 @@ public class WebSockets {
             AuthData user = authDAO.getAuth(auth);
             GameData returnGame = gameDAO.findGame(gameID);
             if (returnGame == null || returnGame.game() == null) {
-                connections.error(session, "Error failed to make move!");
+                connections.error(session, "Error failed to make move! Return game empty.");
+            }
+            assert returnGame.game() != null;
+            ChessGame.TeamColor startingColor = returnGame.game().getBoard().getPiece(move.getStartPosition()).getTeamColor();
+            if (Objects.equals(returnGame.blackUsername(), user.username()) && startingColor == ChessGame.TeamColor.WHITE) {
+                connections.error(session, "You tried to make move for opponent.");
+            } else if (Objects.equals(returnGame.whiteUsername(), user.username()) && startingColor == ChessGame.TeamColor.BLACK) {
+                connections.error(session, "You tried to make move for opponent.");
+            } else if (returnGame.game().isInStalemate(ChessGame.TeamColor.WHITE) || returnGame.game().isInCheckmate(ChessGame.TeamColor.WHITE) || returnGame.game().isInStalemate(ChessGame.TeamColor.BLACK) || returnGame.game().isInCheckmate(ChessGame.TeamColor.BLACK)) {
+                connections.error(session, "Error Game over.");
+                returnGame.game().isOver = true;
+                gameDAO.updateGame(returnGame);
+            } else if (!Objects.equals(returnGame.blackUsername(), user.username()) && !Objects.equals(returnGame.whiteUsername(), user.username())) {
+                connections.error(session, "Error You are just an observer.");
+            } else if (returnGame.game().isOver) {
+                connections.error(session, "Error game is over.");
             } else {
                 returnGame.game().makeMove(move);
+                gameDAO.updateGame(returnGame);
                 connections.MakeMove(user.authToken(), gameID, returnGame.game());
+                connections.broadcast(user.authToken(), new Notification(user.username() + " has made a move"), gameID);
             }
         } catch (DataAccessException | InvalidMoveException | IOException e) {
             connections.error(session, "Error failed to make move!");

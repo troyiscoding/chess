@@ -15,6 +15,7 @@ public class ChessGame {
     public ChessBoard board = new ChessBoard();
     private boolean enPassant = false;
     private boolean castling = false;
+    public boolean isOver = false;
 
 
     public ChessGame() {
