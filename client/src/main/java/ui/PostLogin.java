@@ -1,6 +1,7 @@
 package ui;
 
 import chess.ChessGame;
+import handler.JoinRequest;
 import handler.List;
 import handler.ListResponse;
 import webSocket.WebSocketFacade;
@@ -121,12 +122,14 @@ public class PostLogin {
             try {
                 ListResponse pickedGame = list.games().get(Integer.parseInt(params[0]));
                 String color = params[1];
-                //facade.joinGame(authToken, new JoinRequest(color, pickedGame.gameID()));
-                if (color.equals("white") || color.equals("WHITE"))
+                //
+                if (color.equals("white") || color.equals("WHITE")) {
+                    facade.joinGame(authToken, new JoinRequest(color, pickedGame.gameID()));
                     websocket.joinPlayer(new JoinPlayer(authToken, pickedGame.gameID(), ChessGame.TeamColor.WHITE));
-                else if (color.equals("black") || color.equals("BLACK"))
+                } else if (color.equals("black") || color.equals("BLACK")) {
+                    facade.joinGame(authToken, new JoinRequest(color, pickedGame.gameID()));
                     websocket.joinPlayer(new JoinPlayer(authToken, pickedGame.gameID(), ChessGame.TeamColor.BLACK));
-                else
+                } else
                     return "Expected: <game number> [WHITE|BLACK|<EMPTY>]";
                 //websocket.joinPlayer(new JOIN_PLAYER(authToken, pickedGame.gameID(), ChessGame.TeamColor.valueOf(color)));
                 System.out.println("You have joined a game.");
@@ -161,5 +164,4 @@ public class PostLogin {
         }
         return "Expected: <game number>";
     }
-
 }

@@ -4,6 +4,7 @@ import chess.ChessBoard;
 import chess.ChessGame;
 import com.google.gson.Gson;
 import ui.DrawBoardNew;
+import webSocketMessages.serverMessages.Error;
 import webSocketMessages.serverMessages.LoadGame;
 import webSocketMessages.serverMessages.Notification;
 import webSocketMessages.serverMessages.ServerMessage;
@@ -52,10 +53,10 @@ public class WebSocketFacade extends Endpoint {
     }
 
     private void error(String message) {
-        var error = new Gson().fromJson(message, Notification.class);
+        var error = new Gson().fromJson(message, Error.class);
         System.out.println("Error received");
-        System.out.println(error.getMessage());
-        System.out.print("[SIGNED_IN] >>>");
+        System.out.println(error.errorMessage);
+        System.out.print("[IN_GAME] >>>");
     }
 
 

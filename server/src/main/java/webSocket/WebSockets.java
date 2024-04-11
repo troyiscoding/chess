@@ -174,28 +174,36 @@ public class WebSockets {
             if (returnGame == null || returnGame.game() == null) {
                 connections.error(session, "Error failed to make move! Return game empty.");
             }
-            assert returnGame.game() != null;
-            ChessGame.TeamColor startingColor = returnGame.game().getBoard().getPiece(move.getStartPosition()).getTeamColor();
-            if (Objects.equals(returnGame.blackUsername(), user.username()) && startingColor == ChessGame.TeamColor.WHITE) {
-                connections.error(session, "You tried to make move for opponent.");
-            } else if (Objects.equals(returnGame.whiteUsername(), user.username()) && startingColor == ChessGame.TeamColor.BLACK) {
-                connections.error(session, "You tried to make move for opponent.");
-            } else if (returnGame.game().isInStalemate(ChessGame.TeamColor.WHITE) || returnGame.game().isInCheckmate(ChessGame.TeamColor.WHITE) || returnGame.game().isInStalemate(ChessGame.TeamColor.BLACK) || returnGame.game().isInCheckmate(ChessGame.TeamColor.BLACK)) {
-                connections.error(session, "Error Game over.");
-                returnGame.game().isOver = true;
-                gameDAO.updateGame(returnGame);
-            } else if (!Objects.equals(returnGame.blackUsername(), user.username()) && !Objects.equals(returnGame.whiteUsername(), user.username())) {
-                connections.error(session, "Error You are just an observer.");
-            } else if (returnGame.game().isOver) {
-                connections.error(session, "Error game is over.");
+            if (returnGame.game() == null) throw new InvalidMoveException();
+            if (move.getStartPosition() == null) throw new InvalidMoveException();
+            var startingPiece = returnGame.game().getBoard().getPiece(move.getStartPosition());
+            if (startingPiece != null) {
+                ChessGame.TeamColor startingColor = startingPiece.getTeamColor();
+                if (Objects.equals(returnGame.blackUsername(), user.username()) && startingColor == ChessGame.TeamColor.WHITE) {
+                    connections.error(session, "You tried to make move for opponent.");
+                } else if (Objects.equals(returnGame.whiteUsername(), user.username()) && startingColor == ChessGame.TeamColor.BLACK) {
+                    connections.error(session, "You tried to make move for opponent.");
+                } else if (returnGame.game().isInStalemate(ChessGame.TeamColor.WHITE) || returnGame.game().isInCheckmate(ChessGame.TeamColor.WHITE) || returnGame.game().isInStalemate(ChessGame.TeamColor.BLACK) || returnGame.game().isInCheckmate(ChessGame.TeamColor.BLACK)) {
+                    connections.error(session, "Error Game over.");
+                    returnGame.game().isOver = true;
+                    gameDAO.updateGame(returnGame);
+                } else if (!Objects.equals(returnGame.blackUsername(), user.username()) && !Objects.equals(returnGame.whiteUsername(), user.username())) {
+                    connections.error(session, "Error You are just an observer.");
+                } else if (returnGame.game().isOver) {
+                    connections.error(session, "Error game is over.");
+                } else {
+                    returnGame.game().makeMove(move);
+                    gameDAO.updateGame(returnGame);
+                    connections.sendMove(user.authToken(), gameID, returnGame.game());
+                    connections.broadcast(user.authToken(), new Notification(user.username() + " has made a move"), gameID);
+                }
             } else {
-                returnGame.game().makeMove(move);
-                gameDAO.updateGame(returnGame);
-                connections.sendMove(user.authToken(), gameID, returnGame.game());
-                connections.broadcast(user.authToken(), new Notification(user.username() + " has made a move"), gameID);
+                connections.error(session, "Error you choose a blank square!");
             }
-        } catch (DataAccessException | InvalidMoveException | IOException e) {
+        } catch (DataAccessException | IOException e) {
             connections.error(session, "Error failed to make move!");
+        } catch (InvalidMoveException e) {
+            connections.error(session, "Error Invalid Move.");
         }
     }
 }

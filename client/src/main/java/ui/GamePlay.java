@@ -69,7 +69,6 @@ public class GamePlay {
 
     //Redraw Chess Board - Redraws the chess board upon the user's request
     public String redraw() {
-        //drawChessBoard();
         DrawBoardNew.drawBoardNew(WebSocketFacade.chessBoard, ChessGame.TeamColor.WHITE);
         return "";
     }
@@ -100,12 +99,17 @@ public class GamePlay {
             return "No moves after game completion due to resignation, checkmate, or stalemate.";
         }
 
-        if (params.length >= 1) {
+        if (params.length >= 2) {
             try {
-                var startPosition = new ChessPosition(Integer.parseInt(params[0]), Integer.parseInt(params[1]));
-                var endPosition = new ChessPosition(Integer.parseInt(params[2]), Integer.parseInt(params[3]));
+                int startColumn = Character.toUpperCase(params[0].charAt(0)) - 'A' + 1;
+                int startRow = Integer.parseInt(params[0].substring(1));
+                int endColumn = Character.toUpperCase(params[1].charAt(0)) - 'A' + 1;
+                int endRow = Integer.parseInt(params[1].substring(1));
+
+                var startPosition = new ChessPosition(startRow, startColumn);
+                var endPosition = new ChessPosition(endRow, endColumn);
                 websocket.makeMove(new MakeMove(authToken, gameID, new ChessMove(startPosition, endPosition, null)));
-                return "Move made.";
+                return " ";
             } catch (Exception e) {
                 return e.getMessage();
             }
@@ -141,9 +145,23 @@ public class GamePlay {
     //Highlight Legal Moves - Allows the user to input what piece for which they want to highlight legal moves
     //The selected pieces current square and all squares it can legally move to are highlighted.
     //This is a local operation and has no effect on remote users screens.
-    public String highlight() {
+    public String highlight(String... params) {
         if (lockout) {
             return "You are an observer and cannot resign.";
+        }
+        if (forfeit) {
+            return "No moves after game completion due to resignation, checkmate, or stalemate.";
+        }
+
+        if (params.length >= 1) {
+            try {
+                int Column = Character.toUpperCase(params[0].charAt(0)) - 'A' + 1;
+                int Row = Integer.parseInt(params[0].substring(1));
+
+                return " ";
+            } catch (Exception e) {
+                return e.getMessage();
+            }
         }
         ChessBoard board = WebSocketFacade.chessBoard;
         return "";
