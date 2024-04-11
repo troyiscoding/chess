@@ -3,7 +3,6 @@ package webSocket;
 import chess.ChessBoard;
 import chess.ChessGame;
 import com.google.gson.Gson;
-import service.ResponseException;
 import ui.DrawBoardNew;
 import webSocketMessages.serverMessages.LoadGame;
 import webSocketMessages.serverMessages.Notification;
@@ -71,7 +70,7 @@ public class WebSocketFacade extends Endpoint {
             this.session.getBasicRemote().sendText(new Gson().toJson(join));
 
         } catch (IOException ex) {
-            throw new ResponseException(500, ex.getMessage());
+            System.out.println("Websocket error");
         }
     }
 
@@ -79,7 +78,7 @@ public class WebSocketFacade extends Endpoint {
         try {
             this.session.getBasicRemote().sendText(new Gson().toJson(join));
         } catch (IOException ex) {
-            throw new ResponseException(500, ex.getMessage());
+            System.out.println("Websocket error");
         }
     }
 
@@ -87,7 +86,7 @@ public class WebSocketFacade extends Endpoint {
         try {
             this.session.getBasicRemote().sendText(new Gson().toJson(leave));
         } catch (IOException ex) {
-            throw new ResponseException(500, ex.getMessage());
+            System.out.println("Websocket error");
         }
     }
 
@@ -95,7 +94,7 @@ public class WebSocketFacade extends Endpoint {
         try {
             this.session.getBasicRemote().sendText(new Gson().toJson(resign));
         } catch (IOException ex) {
-            throw new ResponseException(500, ex.getMessage());
+            System.out.println("Websocket error");
         }
     }
 
@@ -103,7 +102,7 @@ public class WebSocketFacade extends Endpoint {
         try {
             this.session.getBasicRemote().sendText(new Gson().toJson(move));
         } catch (IOException ex) {
-            throw new ResponseException(500, ex.getMessage());
+            System.out.println("Websocket error");
         }
     }
 }
