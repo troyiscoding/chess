@@ -157,10 +157,6 @@ public class GamePlay {
                 int column = Character.toUpperCase(params[0].charAt(0)) - 'A' + 1;
                 int row = Integer.parseInt(params[0].substring(1));
                 Collection<ChessMove> validList = WebSocketFacade.game.validMoves(new ChessPosition(row, column));
-                //Print things out to make building easier
-                for (ChessMove move : validList) {
-                    System.out.println(move.getEndPosition());
-                }
 
                 List<ChessPosition> squares = new ArrayList<>();
                 for (ChessMove move : validList) {

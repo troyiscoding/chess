@@ -198,7 +198,9 @@ public class WebSockets {
                     connections.broadcast(user.authToken(), new Notification(user.username() + " has made a move"), gameID);
                     if (returnGame.game().isInStalemate(ChessGame.TeamColor.WHITE) || returnGame.game().isInCheckmate(ChessGame.TeamColor.WHITE) || returnGame.game().isInStalemate(ChessGame.TeamColor.BLACK) || returnGame.game().isInCheckmate(ChessGame.TeamColor.BLACK)) {
                         connections.broadcastResign(user.authToken(), new Notification("Game Over, In Checkmate or Stalemate"), gameID);
-                        //returnGame.game().isOver = true;
+                    }
+                    if (returnGame.game().isInCheck(ChessGame.TeamColor.WHITE) || returnGame.game().isInCheck(ChessGame.TeamColor.BLACK)) {
+                        connections.broadcastResign(user.authToken(), new Notification("You are in Check"), gameID);
                     }
                 }
             } else {
