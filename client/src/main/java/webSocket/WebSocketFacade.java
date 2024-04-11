@@ -17,7 +17,7 @@ import java.net.URI;
 
 
 public class WebSocketFacade extends Endpoint {
-    public javax.websocket.Session session;
+    public Session session;
     public static ChessBoard chessBoard = new ChessBoard();
 
     public WebSocketFacade(String url) throws Exception {
